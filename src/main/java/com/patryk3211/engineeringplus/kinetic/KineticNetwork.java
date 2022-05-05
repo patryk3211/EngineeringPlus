@@ -11,27 +11,6 @@ import java.util.*;
 public class KineticNetwork {
     public static final Map<UUID, KineticNetwork> networks = new HashMap<>();
 
-    public static class NetworkPosition {
-        public BlockPos position;
-        public Direction direction;
-
-        public NetworkPosition(BlockPos position, Direction direction) {
-            this.position = position;
-            this.direction = direction;
-        }
-
-        @Override
-        public int hashCode() {
-            return position.hashCode() ^ (direction != null ? (direction.hashCode() << 1) : 0);
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            if(obj instanceof NetworkPosition) return position == ((NetworkPosition) obj).position && direction == ((NetworkPosition) obj).direction;
-            else return false;
-        }
-    }
-
     public final Map<BlockPos, Set<Direction>> tiles = new HashMap<>();
 
     private final UUID id;
@@ -58,6 +37,10 @@ public class KineticNetwork {
         return angle;
     }
 
+    public float getInertia() {
+        return inertia;
+    }
+
     public UUID getId() {
         return id;
     }
@@ -69,6 +52,21 @@ public class KineticNetwork {
             dirs.add(direction);
             tiles.put(position, dirs);
         }
+    }
+
+    public void addMass(float mass, float speed) {
+        float kineticEnergy = inertia * this.speed + mass * speed;
+        inertia += mass;
+        this.speed = kineticEnergy / inertia;
+    }
+
+    public void removeMass(float mass) {
+        inertia -= mass;
+    }
+
+    public void setValues(float speed, float angle) {
+        this.speed = speed;
+        this.angle = angle;
     }
 
     public static KineticNetwork getNetwork(UUID id) {
@@ -83,18 +81,29 @@ public class KineticNetwork {
         networks.clear();
     }
 
+    public static class NetworkStore {
+        public KineticNetwork network;
+    }
+
     public static IKineticHandler createHandler(float speedMultiplier, float angleOffset, float inertialMass) {
         return new IKineticHandler() {
-            private NetworkReference reference = null;
+            private KineticNetwork network;
+
+            private final NetworkReference reference = new NetworkReference(speedMultiplier, angleOffset) {
+                @Override
+                public KineticNetwork getNetwork() {
+                    return network;
+                }
+            };
 
             @Override
             public float getSpeed() {
-                return reference.network.speed * reference.speedMultiplier;
+                return network.speed * reference.speedMultiplier;
             }
 
             @Override
             public float getAngle() {
-                return ((reference.network.angle * reference.speedMultiplier) + reference.angleOffset) % 360;
+                return ((network.angle * reference.speedMultiplier) + reference.angleOffset) % 360;
             }
 
             @Override
@@ -114,24 +123,85 @@ public class KineticNetwork {
 
             @Override
             public void applyForce(float force) {
-                float localInertia = reference.network.inertia / reference.speedMultiplier;
-                reference.network.speed += force / localInertia;
+                float localInertia = network.inertia / reference.speedMultiplier;
+                network.speed += force / localInertia * 0.05f; // Force / mass * 1/20 second (1 tick)
             }
 
             @Override
             public float calculateForce(float targetSpeed) {
-                float localInertia = reference.network.inertia / reference.speedMultiplier;
-                float speedDelta = targetSpeed - reference.network.speed;
-                return speedDelta * localInertia;
+                float localInertia = network.inertia / reference.speedMultiplier;
+                float speedDelta = targetSpeed - network.speed;
+                return speedDelta * localInertia * 20f;
             }
 
             @Override
-            public void setNetwork(NetworkReference network) {
-                reference = network;
+            public void setNetwork(KineticNetwork network) {
+                this.network = network;
             }
 
             @Override
-            public NetworkReference getNetwork() {
+            public NetworkReference getNetworkReference() {
+                return reference;
+            }
+        };
+    }
+
+    public static IKineticHandler createHandler(NetworkStore networkStore, float speedMultiplier, float angleOffset, float inertialMass) {
+        return new IKineticHandler() {
+            private final NetworkStore store = networkStore;
+
+            private final NetworkReference reference = new NetworkReference(speedMultiplier, angleOffset) {
+                @Override
+                public KineticNetwork getNetwork() {
+                    return store.network;
+                }
+            };
+
+            @Override
+            public float getSpeed() {
+                return store.network.speed * reference.speedMultiplier;
+            }
+
+            @Override
+            public float getAngle() {
+                return ((store.network.angle * reference.speedMultiplier) + reference.angleOffset) % 360;
+            }
+
+            @Override
+            public float getSpeedMultiplier() {
+                return speedMultiplier;
+            }
+
+            @Override
+            public float getAngleOffset() {
+                return angleOffset;
+            }
+
+            @Override
+            public float getInertia() {
+                return inertialMass;
+            }
+
+            @Override
+            public void applyForce(float force) {
+                float localInertia = store.network.inertia / reference.speedMultiplier;
+                store.network.speed += force / localInertia * 0.05f;
+            }
+
+            @Override
+            public float calculateForce(float targetSpeed) {
+                float localInertia = store.network.inertia / reference.speedMultiplier;
+                float speedDelta = targetSpeed - store.network.speed;
+                return speedDelta * localInertia * 20f;
+            }
+
+            @Override
+            public void setNetwork(KineticNetwork network) {
+                store.network = network;
+            }
+
+            @Override
+            public NetworkReference getNetworkReference() {
                 return reference;
             }
         };

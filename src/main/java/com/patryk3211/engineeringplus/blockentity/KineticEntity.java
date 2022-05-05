@@ -10,7 +10,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.util.LazyOptional;
-import org.apache.commons.lang3.tuple.Pair;
+import org.antlr.v4.runtime.misc.Pair;
+import org.apache.commons.lang3.tuple.Triple;
 
 import java.util.*;
 
@@ -22,6 +23,8 @@ public abstract class KineticEntity extends BlockEntity {
     }
 
     public void init() {
+        if(level.isClientSide) return;
+
         Set<IKineticHandler> checkHandlers = new HashSet<>();
 
         for(Direction dir : Direction.values()) {
@@ -47,72 +50,114 @@ public abstract class KineticEntity extends BlockEntity {
                 LazyOptional<IKineticHandler> neighbourLazyHandler = neighbour.getCapability(ModCapabilities.KINETIC, dir.getOpposite());
                 IKineticHandler neighbourHandler = neighbourLazyHandler.orElse(null);
 
-                IKineticHandler.NetworkReference neighbourNetwork = neighbourHandler.getNetwork();
-                if(neighbourNetwork != null) {
-                    if(handler.getNetwork() == null) {
+                IKineticHandler.NetworkReference neighbourNetworkReference = neighbourHandler.getNetworkReference();
+                if(neighbourNetworkReference != null) {
+                    if(handler.getNetworkReference().getNetwork() == null) {
                         // Attach to neighbour's network
-                        IKineticHandler.NetworkReference reference = new IKineticHandler.NetworkReference(neighbourNetwork.network, neighbourNetwork.speedMultiplier * handler.getSpeedMultiplier(), neighbourNetwork.angleOffset + handler.getAngleOffset());
-                        reference.network.addTile(worldPosition, dir);
-                        handler.setNetwork(reference);
+                        handler.getNetworkReference().offset(neighbourNetworkReference.speedMultiplier, neighbourNetworkReference.angleOffset);
+                        neighbourNetworkReference.getNetwork().addTile(worldPosition, dir);
+                        handler.setNetwork(neighbourNetworkReference.getNetwork());
                     } else {
                         // Merge our network into the neighbouring one
-                        neighbourNetwork.network.addTile(worldPosition, dir);
-                        IKineticHandler.NetworkReference oldNetwork = handler.getNetwork();
-                        handler.setNetwork(new IKineticHandler.NetworkReference(neighbourNetwork.network, neighbourNetwork.speedMultiplier * handler.getSpeed(), neighbourNetwork.angleOffset * handler.getAngleOffset()));
+                        neighbourNetworkReference.getNetwork().addTile(worldPosition, dir);
+                        KineticNetwork oldNetwork = handler.getNetworkReference().getNetwork();
+                        handler.getNetworkReference().offset(neighbourNetworkReference.speedMultiplier, neighbourNetworkReference.angleOffset);
+                        handler.setNetwork(neighbourNetworkReference.getNetwork());
 
-                        oldNetwork.network.tiles.forEach((position, directions) -> {
+                        // Add the inertia
+                        neighbourNetworkReference.getNetwork().addMass(oldNetwork.getInertia(), oldNetwork.getSpeed());
+
+                        oldNetwork.tiles.forEach((position, directions) -> {
                             BlockEntity entity = level.getBlockEntity(position);
                             if(entity == null) return;
 
                             for (Direction direction : directions) {
                                 LazyOptional<IKineticHandler> lazy = entity.getCapability(ModCapabilities.KINETIC, direction);
                                 lazy.ifPresent(entityHandler -> {
-                                    entityHandler.getNetwork().network = neighbourNetwork.network;
-                                    entityHandler.getNetwork().speedMultiplier *= neighbourNetwork.speedMultiplier;
-                                    entityHandler.getNetwork().angleOffset += neighbourNetwork.angleOffset;
-                                    neighbourNetwork.network.addTile(position, direction);
+                                    entityHandler.setNetwork(neighbourNetworkReference.getNetwork());
+                                    entityHandler.getNetworkReference().offset(neighbourNetworkReference.speedMultiplier, neighbourNetworkReference.angleOffset);
+                                    neighbourNetworkReference.getNetwork().addTile(position, direction);
                                 });
                             }
                         });
 
-                        oldNetwork.network.remove();
+                        oldNetwork.remove();
                     }
+                    neighbourNetworkReference.getNetwork().addMass(handler.getInertia() / handler.getNetworkReference().speedMultiplier, 0);
                 } else checkHandlers.add(handler);
             });
         }
 
         for (IKineticHandler handler : checkHandlers) {
-            if(handler.getNetwork() == null) handler.setNetwork(new IKineticHandler.NetworkReference(new KineticNetwork(UUID.randomUUID()), 1, 0));
-            for (Direction direction : handlerMap.get(handler)) {
-                handler.getNetwork().network.addTile(worldPosition, direction);
-            }
+            if(handler.getNetworkReference().getNetwork() == null) handler.setNetwork(new KineticNetwork(UUID.randomUUID())); //handler.setNetwork(new IKineticHandler.NetworkReference(new KineticNetwork(UUID.randomUUID()), 1, 0));
+            for (Direction direction : handlerMap.get(handler))
+                handler.getNetworkReference().getNetwork().addTile(worldPosition, direction);
+            handler.getNetworkReference().getNetwork().addMass(handler.getInertia() / handler.getNetworkReference().speedMultiplier, 0);
         }
     }
+
+    private void tracePos(BlockPos position, Map<BlockPos, Set<Direction>> tiles, KineticNetwork resultNetwork) {
+        Set<Direction> directions = tiles.remove(position);
+        if(directions == null) return;
+
+        BlockEntity entity = level.getBlockEntity(position);
+        if(entity == null) return;
+
+        for (Direction direction : directions) {
+            entity.getCapability(ModCapabilities.KINETIC, direction).ifPresent(handler -> handler.setNetwork(resultNetwork));
+            resultNetwork.addTile(position, direction);
+            tracePos(position.offset(direction.getNormal()), tiles, resultNetwork);
+        }
+    }
+
+    @Override
+    public void setRemoved() {
+        if(level.isClientSide) return;
+
+        Map<KineticNetwork, Set<Direction>> tilePools = new HashMap<>();
+
+        handlerMap.forEach((handler, directions) -> {
+            KineticNetwork network = handler.getNetworkReference().getNetwork();
+
+            if(tilePools.containsKey(network)) tilePools.get(network).addAll(directions);
+            else {
+                tilePools.put(network, Set.copyOf(directions));
+                network.tiles.remove(worldPosition);
+            }
+        });
+
+        tilePools.forEach((network, directions) -> {
+            for (Direction direction : directions) {
+                BlockPos startPos = worldPosition.offset(direction.getNormal());
+                if(!network.tiles.containsKey(startPos)) continue;
+
+                KineticNetwork result = new KineticNetwork(UUID.randomUUID());
+                tracePos(startPos, network.tiles, result);
+
+                result.setValues(network.getSpeed(), network.getAngle());
+            }
+            network.remove();
+        });
+    }
+
+    public abstract List<LazyOptional<IKineticHandler>> getHandlersToStore();
 
     @Override
     public void load(CompoundTag tag) {
         // Load networks
         CompoundTag networks = tag.getCompound("networks");
-        handlerMap.forEach((handler, dirs) -> {
-            IKineticHandler.NetworkReference networkReference = handler.getNetwork();
 
-            CompoundTag network = null;
-            for (Direction dir : dirs) {
-                network = networks.getCompound(Integer.toString(dir.get3DDataValue()));
-                if(network.isEmpty()) break;
-            }
-            // TODO: [05.05.2022] Instead of returning we should create an empty network or something.
-            if(network == null) return;
+        List<LazyOptional<IKineticHandler>> handlers = getHandlersToStore();
+        for (int i = 0; i < handlers.size(); ++i) {
+            CompoundTag network = networks.getCompound(Integer.toString(i));
 
-            if(networkReference == null) {
-                networkReference = new IKineticHandler.NetworkReference(null, 0, 0);
-                handler.setNetwork(networkReference);
-            }
-
-            networkReference.network = KineticNetwork.getNetwork(network.getUUID("id"));
-            networkReference.speedMultiplier = network.getFloat("speed");
-            networkReference.angleOffset = network.getFloat("angle");
-        });
+            LazyOptional<IKineticHandler> lazyHandler = handlers.get(i);
+            lazyHandler.ifPresent(handler -> {
+                handler.setNetwork(KineticNetwork.getNetwork(network.getUUID("id")));
+                handler.getNetworkReference().speedMultiplier = network.getFloat("speed");
+                handler.getNetworkReference().angleOffset = network.getFloat("angle");
+            });
+        }
         super.load(tag);
     }
 
@@ -120,23 +165,20 @@ public abstract class KineticEntity extends BlockEntity {
     protected void saveAdditional(CompoundTag tag) {
         // Save network IDs and their relations
         CompoundTag networks = new CompoundTag();
-        handlerMap.forEach((handler, dirs) -> {
-            IKineticHandler.NetworkReference networkReference = handler.getNetwork();
 
+        List<LazyOptional<IKineticHandler>> handlers = getHandlersToStore();
+        for (int i = 0; i < handlers.size(); ++i) {
             CompoundTag network = new CompoundTag();
-            network.putUUID("id", networkReference.network.getId());
-            network.putFloat("speed", networkReference.speedMultiplier);
-            network.putFloat("angle", networkReference.angleOffset);
 
-            Direction firstDir = null;
-            for (Direction dir : dirs) {
-                firstDir = dir;
-                break;
-            }
-            if(firstDir == null) throw new IllegalStateException("How is there a handler with no directions?");
+            LazyOptional<IKineticHandler> lazyHandler = handlers.get(i);
+            lazyHandler.ifPresent(handler -> {
+                network.putUUID("id", handler.getNetworkReference().getNetwork().getId());
+                network.putFloat("speed", handler.getNetworkReference().speedMultiplier);
+                network.putFloat("angle", handler.getNetworkReference().angleOffset);
+            });
 
-            networks.put(Integer.toString(firstDir.get3DDataValue()), network);
-        });
+            networks.put(Integer.toString(i), network);
+        }
         tag.put("networks", networks);
 
         super.saveAdditional(tag);

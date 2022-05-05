@@ -12,4 +12,5 @@ public class ModItems {
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, Config.MOD_ID);
 
     public static final RegistryObject<Item> shaft = ITEMS.register("shaft", () -> new BlockItem(ModBlocks.shaft.get(), new Item.Properties()));
+    public static final RegistryObject<Item> handCrank = ITEMS.register("hand_crank", () -> new BlockItem(ModBlocks.handCrank.get(), new Item.Properties()));
 }

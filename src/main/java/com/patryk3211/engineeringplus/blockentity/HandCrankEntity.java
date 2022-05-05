@@ -1,6 +1,5 @@
 package com.patryk3211.engineeringplus.blockentity;
 
-import com.patryk3211.engineeringplus.EngineeringPlusMod;
 import com.patryk3211.engineeringplus.capabilities.ModCapabilities;
 import com.patryk3211.engineeringplus.capabilities.kinetic.IKineticHandler;
 import com.patryk3211.engineeringplus.kinetic.KineticNetwork;
@@ -15,19 +14,23 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class ShaftEntity extends KineticEntity {
+public class HandCrankEntity extends KineticEntity {
     private final LazyOptional<IKineticHandler> kineticHandler = LazyOptional.of(() -> KineticNetwork.createHandler(1, 0, 0.5f));
 
-    public ShaftEntity(BlockPos pos, BlockState state) {
-        super(ModBlockEntities.shaft.get(), pos, state);
+    public HandCrankEntity(BlockPos pos, BlockState state) {
+        super(ModBlockEntities.handCrank.get(), pos, state);
+    }
+
+    public void tick() {
+        IKineticHandler handler = kineticHandler.orElse(null);
+        if(handler.getSpeed() < 1.5f) handler.applyForce(1);
     }
 
     @NotNull
     @Override
     public <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
         if(cap == ModCapabilities.KINETIC) {
-            if(side != null && side.getAxis() == getBlockState().getValue(BlockStateProperties.AXIS))
-                return kineticHandler.cast();
+            if(side == getBlockState().getValue(BlockStateProperties.FACING)) return kineticHandler.cast();
             else return LazyOptional.empty();
         }
         return super.getCapability(cap, side);

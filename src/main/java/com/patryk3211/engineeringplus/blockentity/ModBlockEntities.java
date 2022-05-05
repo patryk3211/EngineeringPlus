@@ -10,5 +10,6 @@ import net.minecraftforge.registries.RegistryObject;
 public class ModBlockEntities {
     public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITIES, Config.MOD_ID);
 
-    public static final RegistryObject<BlockEntityType<?>> shaft = BLOCK_ENTITIES.register("shaft", () -> BlockEntityType.Builder.of(ShaftEntity::new, ModBlocks.shaft.get()).build(null));
+    public static final RegistryObject<BlockEntityType<ShaftEntity>> shaft = BLOCK_ENTITIES.register("shaft", () -> BlockEntityType.Builder.of(ShaftEntity::new, ModBlocks.shaft.get()).build(null));
+    public static final RegistryObject<BlockEntityType<HandCrankEntity>> handCrank = BLOCK_ENTITIES.register("hand_crank", () -> BlockEntityType.Builder.of(HandCrankEntity::new, ModBlocks.handCrank.get()).build(null));
 }
