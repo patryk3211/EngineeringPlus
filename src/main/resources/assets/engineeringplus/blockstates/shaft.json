@@ -1,0 +1,11 @@
+{
+    "variants": {
+        "axis=z,model_part=static": { "model": "minecraft:block/air" },
+        "axis=y,model_part=static": { "model": "minecraft:block/air" },
+        "axis=x,model_part=static": { "model": "minecraft:block/air" },
+
+        "axis=z,model_part=shaft": { "model": "engineeringplus:block/shaft" },
+        "axis=y,model_part=shaft": { "model": "engineeringplus:block/shaft", "x": 90 },
+        "axis=x,model_part=shaft": { "model": "engineeringplus:block/shaft", "y": 90 }
+    }
+}
