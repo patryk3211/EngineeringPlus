@@ -1,6 +1,6 @@
 package com.patryk3211.engineeringplus.capabilities.kinetic;
 
-import com.patryk3211.engineeringplus.kinetic.KineticNetwork;
+import com.patryk3211.engineeringplus.kinetic.IKineticNetwork;
 
 public interface IKineticHandler {
     abstract class NetworkReference {
@@ -17,7 +17,7 @@ public interface IKineticHandler {
             this.angleOffset += angleOffset;
         }
 
-        public abstract KineticNetwork getNetwork();
+        public abstract IKineticNetwork getNetwork();
     }
 
     /**
@@ -54,6 +54,6 @@ public interface IKineticHandler {
      */
     float calculateForce(float targetSpeed);
 
-    void setNetwork(KineticNetwork network);
+    void setNetwork(IKineticNetwork network);
     NetworkReference getNetworkReference();
 }

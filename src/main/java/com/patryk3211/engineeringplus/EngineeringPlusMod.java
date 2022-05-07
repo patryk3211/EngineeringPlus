@@ -7,10 +7,14 @@ import com.patryk3211.engineeringplus.capabilities.ModCapabilities;
 import com.patryk3211.engineeringplus.item.ModItems;
 import com.patryk3211.engineeringplus.kinetic.KineticNetwork;
 import com.patryk3211.engineeringplus.kinetic.client.ClientKineticNetwork;
+import com.patryk3211.engineeringplus.network.KineticNetworkPacket;
+import com.patryk3211.engineeringplus.network.PacketHandler;
+import com.patryk3211.engineeringplus.renderer.ModBlockEntityRenderers;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.slf4j.Logger;
 
@@ -26,15 +30,23 @@ public class EngineeringPlusMod {
         ModItems.ITEMS.register(modEventBus);
         ModBlockEntities.BLOCK_ENTITIES.register(modEventBus);
 
+        modEventBus.addListener(this::commonSetup);
         modEventBus.addListener(this::clientSetup);
 
         modEventBus.addListener(ModCapabilities::registerCapabilities);
+
+        modEventBus.addListener(ModBlockEntityRenderers::onRendererRegister);
 
         // Register Minecraft event listeners
         KineticNetwork.registerEvents();
     }
 
+    private void commonSetup(final FMLCommonSetupEvent event) {
+        PacketHandler.register(KineticNetworkPacket.class, KineticNetworkPacket::encode, KineticNetworkPacket::decode, KineticNetworkPacket::handle);
+        LOGGER.info("Registered packet handlers!");
+    }
+
     private void clientSetup(final FMLClientSetupEvent event) {
-        MinecraftForge.EVENT_BUS.addListener(ClientKineticNetwork::onRenderOverlay);
+        ClientKineticNetwork.registerEvents();
     }
 }

@@ -1,6 +1,6 @@
 package com.patryk3211.engineeringplus.blockentity;
 
-import com.patryk3211.engineeringplus.EngineeringPlusMod;
+import com.patryk3211.engineeringplus.block.ModBlockProperties;
 import com.patryk3211.engineeringplus.capabilities.ModCapabilities;
 import com.patryk3211.engineeringplus.capabilities.kinetic.IKineticHandler;
 import com.patryk3211.engineeringplus.kinetic.KineticNetwork;
@@ -10,6 +10,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
+import org.apache.commons.lang3.tuple.Triple;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -36,5 +37,11 @@ public class ShaftEntity extends KineticEntity {
     @Override
     public List<LazyOptional<IKineticHandler>> getHandlersToStore() {
         return List.of(kineticHandler);
+    }
+
+    @Override
+    public List<Triple<LazyOptional<IKineticHandler>, BlockState, Direction.Axis>> getRenderedHandlers() {
+        BlockState state = getBlockState();
+        return List.of(Triple.of(kineticHandler, state.setValue(ModBlockProperties.MODEL_PART, ModBlockProperties.ModelPart.SHAFT), state.getValue(BlockStateProperties.AXIS)));
     }
 }

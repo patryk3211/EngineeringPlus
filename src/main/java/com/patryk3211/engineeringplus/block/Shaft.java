@@ -25,6 +25,7 @@ public class Shaft extends KineticBlock {
 
     public Shaft() {
         super(Properties.of(Material.STONE));
+        registerDefaultState(defaultBlockState().setValue(ModBlockProperties.MODEL_PART, ModBlockProperties.ModelPart.STATIC));
     }
 
     @Override
@@ -37,8 +38,7 @@ public class Shaft extends KineticBlock {
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
         return defaultBlockState()
-                .setValue(BlockStateProperties.AXIS, context.getClickedFace().getAxis())
-                .setValue(ModBlockProperties.MODEL_PART, ModBlockProperties.ModelPart.SHAFT);
+                .setValue(BlockStateProperties.AXIS, context.getClickedFace().getAxis());
     }
 
     @Nullable
