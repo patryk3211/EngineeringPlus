@@ -28,15 +28,16 @@ public class KineticRenderer implements BlockEntityRenderer<KineticEntity> {
             case Y -> Vector3f.YP.copy();
             case Z -> Vector3f.ZP.copy();
         };
+        Vector3f plane = new Vector3f((1 - normal.x()) * 0.5f, (1 - normal.y()) * 0.5f, (1 - normal.z()) * 0.5f);
 
         // Convert degrees to radians
         angle = angle * 0.0174532925f;
 
         normal.mul(angle);
 
-        stack.translate(0.5, 0.5, 0);
+        stack.translate(plane.x(), plane.y(), plane.z());
         stack.mulPose(Quaternion.fromXYZ(normal));
-        stack.translate(-0.5, -0.5, 0);
+        stack.translate(-plane.x(), -plane.y(), -plane.z());
 
         Minecraft.getInstance().getBlockRenderer().renderSingleBlock(state, stack, buffer, light, overlay, EmptyModelData.INSTANCE);
     }
