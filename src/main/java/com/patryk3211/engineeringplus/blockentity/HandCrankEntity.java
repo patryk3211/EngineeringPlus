@@ -25,7 +25,7 @@ public class HandCrankEntity extends KineticEntity {
 
     public void tick() {
         IKineticHandler handler = kineticHandler.orElse(null);
-        if(handler.getSpeed() < 360f) handler.applyForce(1);
+        if(handler.getSpeed() < 360f) handler.applyForce(10);
     }
 
     @NotNull

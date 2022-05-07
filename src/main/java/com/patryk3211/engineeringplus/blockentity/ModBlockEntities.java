@@ -12,4 +12,5 @@ public class ModBlockEntities {
 
     public static final RegistryObject<BlockEntityType<ShaftEntity>> shaft = BLOCK_ENTITIES.register("shaft", () -> BlockEntityType.Builder.of(ShaftEntity::new, ModBlocks.shaft.get()).build(null));
     public static final RegistryObject<BlockEntityType<HandCrankEntity>> handCrank = BLOCK_ENTITIES.register("hand_crank", () -> BlockEntityType.Builder.of(HandCrankEntity::new, ModBlocks.handCrank.get()).build(null));
+    public static final RegistryObject<BlockEntityType<GearboxEntity>> gearbox = BLOCK_ENTITIES.register("gearbox", () -> BlockEntityType.Builder.of(GearboxEntity::new, ModBlocks.gearbox.get()).build(null));
 }

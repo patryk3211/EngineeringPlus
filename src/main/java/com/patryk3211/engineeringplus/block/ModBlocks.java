@@ -11,4 +11,5 @@ public class ModBlocks {
 
     public static final RegistryObject<Block> shaft = BLOCKS.register("shaft", Shaft::new);
     public static final RegistryObject<Block> handCrank = BLOCKS.register("hand_crank", HandCrank::new);
+    public static final RegistryObject<Block> gearbox = BLOCKS.register("gearbox", Gearbox::new);
 }

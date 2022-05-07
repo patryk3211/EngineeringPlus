@@ -3,18 +3,18 @@ package com.patryk3211.engineeringplus.capabilities.kinetic;
 import com.patryk3211.engineeringplus.kinetic.IKineticNetwork;
 
 public class EntangledKineticHandler implements IKineticHandler {
-    public static class KineticHandlerDataStore {
+    public static class DataStore {
         private IKineticNetwork network;
         private float speedMultiplier;
         private float angleOffset;
     }
 
-    private final KineticHandlerDataStore store;
+    private final DataStore store;
     private final float speedMultiplier;
     private final float angleOffset;
     private final float inertialMass;
 
-    public EntangledKineticHandler(KineticHandlerDataStore store, float speedMultiplier, float angleOffset, float inertialMass) {
+    public EntangledKineticHandler(DataStore store, float speedMultiplier, float angleOffset, float inertialMass) {
         this.store = store;
         this.speedMultiplier = speedMultiplier;
         this.angleOffset = angleOffset;

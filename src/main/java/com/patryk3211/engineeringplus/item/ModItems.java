@@ -13,4 +13,5 @@ public class ModItems {
 
     public static final RegistryObject<Item> shaft = ITEMS.register("shaft", () -> new BlockItem(ModBlocks.shaft.get(), new Item.Properties()));
     public static final RegistryObject<Item> handCrank = ITEMS.register("hand_crank", () -> new BlockItem(ModBlocks.handCrank.get(), new Item.Properties()));
+    public static final RegistryObject<Item> gearbox = ITEMS.register("gearbox", () -> new BlockItem(ModBlocks.gearbox.get(), new Item.Properties()));
 }
