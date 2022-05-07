@@ -3,9 +3,7 @@ package com.patryk3211.engineeringplus.kinetic.client;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
-import com.patryk3211.engineeringplus.EngineeringPlusMod;
 import com.patryk3211.engineeringplus.kinetic.IKineticNetwork;
-import com.patryk3211.engineeringplus.kinetic.KineticNetwork;
 import com.patryk3211.engineeringplus.util.RenderUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.api.distmarker.Dist;
@@ -78,6 +76,10 @@ public class ClientKineticNetwork implements IKineticNetwork {
         return id;
     }
 
+    public static void removeAll() {
+        networks.clear();
+    }
+
     public static void registerEvents() {
         MinecraftForge.EVENT_BUS.addListener(ClientKineticNetwork::onRenderOverlay);
         MinecraftForge.EVENT_BUS.addListener(ClientKineticNetwork::onWorldJoin);
@@ -100,14 +102,14 @@ public class ClientKineticNetwork implements IKineticNetwork {
         RenderSystem.enableBlend();
         RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
 
-        KineticNetwork.networks.forEach((id, net) -> {
+        networks.forEach((id, net) -> {
             float r = (id.getLeastSignificantBits() & 0xFF) / 255.0f;
             float g = ((id.getLeastSignificantBits() >> 8) & 0xFF) / 255.0f;
             float b = ((id.getLeastSignificantBits() >> 16) & 0xFF) / 255.0f;
-
-            net.tiles.forEach((pos, dirs) -> {
+            // TODO: [07.05.2022] Fix this...
+            /*net.tiles.forEach((pos, dirs) -> {
                 RenderUtils.renderBlockHighlight(builder, stack, pos, r, g, b, .3f);
-            });
+            });*/
         });
 
         tesselator.end();

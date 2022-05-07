@@ -18,4 +18,12 @@ public abstract class KineticBlock extends Block implements EntityBlock {
         BlockEntity entity = level.getBlockEntity(pos);
         if(entity instanceof KineticEntity) ((KineticEntity) entity).init();
     }
+
+    @Override
+    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
+        BlockEntity entity = level.getBlockEntity(pos);
+        if(!state.is(newState.getBlock())) level.removeBlockEntity(pos);
+
+        if(entity instanceof KineticEntity) ((KineticEntity) entity).delete();
+    }
 }

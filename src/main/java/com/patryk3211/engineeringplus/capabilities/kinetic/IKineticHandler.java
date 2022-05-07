@@ -3,23 +3,6 @@ package com.patryk3211.engineeringplus.capabilities.kinetic;
 import com.patryk3211.engineeringplus.kinetic.IKineticNetwork;
 
 public interface IKineticHandler {
-    abstract class NetworkReference {
-        public float speedMultiplier;
-        public float angleOffset;
-
-        public NetworkReference(float speedMultiplier, float angleOffset) {
-            this.speedMultiplier = speedMultiplier;
-            this.angleOffset = angleOffset;
-        }
-
-        public void offset(float speedMultiplier, float angleOffset) {
-            this.speedMultiplier *= speedMultiplier;
-            this.angleOffset += angleOffset;
-        }
-
-        public abstract IKineticNetwork getNetwork();
-    }
-
     /**
      * Get the rotational velocity of this handler
      * @return Speed [1 rpm]
@@ -32,7 +15,16 @@ public interface IKineticHandler {
      */
     float getAngle();
 
+    /**
+     * Get speed multiplier of this handler (relative to it's network)
+     * @return Speed multiplier
+     */
     float getSpeedMultiplier();
+
+    /**
+     * Get angle offset of this handler (relative to it's network)
+     * @return Angle offset
+     */
     float getAngleOffset();
 
     /**
@@ -55,5 +47,10 @@ public interface IKineticHandler {
     float calculateForce(float targetSpeed);
 
     void setNetwork(IKineticNetwork network);
-    NetworkReference getNetworkReference();
+    IKineticNetwork getNetwork();
+
+    void setParameters(float speedMultiplier, float angleOffset);
+    void offsetParameters(float speedMultiplier, float angleOffset);
+
+    boolean areConnected(IKineticHandler other);
 }

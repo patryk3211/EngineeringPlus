@@ -2,8 +2,8 @@ package com.patryk3211.engineeringplus.blockentity;
 
 import com.patryk3211.engineeringplus.block.ModBlockProperties;
 import com.patryk3211.engineeringplus.capabilities.ModCapabilities;
+import com.patryk3211.engineeringplus.capabilities.kinetic.BasicKineticHandler;
 import com.patryk3211.engineeringplus.capabilities.kinetic.IKineticHandler;
-import com.patryk3211.engineeringplus.kinetic.KineticNetwork;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.BlockState;
@@ -17,7 +17,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 public class HandCrankEntity extends KineticEntity {
-    private final LazyOptional<IKineticHandler> kineticHandler = LazyOptional.of(() -> KineticNetwork.createHandler(1, 0, 0.5f));
+    private final LazyOptional<IKineticHandler> kineticHandler = LazyOptional.of(() -> new BasicKineticHandler(0.5f));
 
     public HandCrankEntity(BlockPos pos, BlockState state) {
         super(ModBlockEntities.handCrank.get(), pos, state);
