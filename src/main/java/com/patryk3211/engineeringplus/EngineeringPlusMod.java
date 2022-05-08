@@ -10,7 +10,9 @@ import com.patryk3211.engineeringplus.kinetic.client.ClientKineticNetwork;
 import com.patryk3211.engineeringplus.network.KineticNetworkPacket;
 import com.patryk3211.engineeringplus.network.PacketHandler;
 import com.patryk3211.engineeringplus.renderer.ModBlockEntityRenderers;
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -37,8 +39,8 @@ public class EngineeringPlusMod {
         modEventBus.addListener(this::clientSetup);
 
         // Other events
+        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> modEventBus.addListener(ModBlockEntityRenderers::onRendererRegister));
         modEventBus.addListener(ModCapabilities::registerCapabilities);
-        modEventBus.addListener(ModBlockEntityRenderers::onRendererRegister);
 
         // Register Minecraft event listeners
         KineticNetwork.registerEvents();
