@@ -1,3 +1,5 @@
 {
-    "block.engineeringplus.shaft": "Shaft"
+    "block.engineeringplus.shaft": "Shaft",
+
+    "config.engineeringplus.common.debug_enabled": "Enable Debug Features"
 }

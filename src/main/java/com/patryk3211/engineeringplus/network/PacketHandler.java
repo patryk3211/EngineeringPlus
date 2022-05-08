@@ -1,6 +1,6 @@
 package com.patryk3211.engineeringplus.network;
 
-import com.patryk3211.engineeringplus.Config;
+import com.patryk3211.engineeringplus.StaticConfig;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.network.NetworkEvent;
@@ -13,10 +13,10 @@ import java.util.function.Supplier;
 
 public class PacketHandler {
     public static final SimpleChannel CHANNEL = NetworkRegistry.newSimpleChannel(
-            new ResourceLocation(Config.MOD_ID, "main"),
-            () -> Config.PROTOCOL_VERSION,
-            Config.PROTOCOL_VERSION::equals,
-            Config.PROTOCOL_VERSION::equals);
+            new ResourceLocation(StaticConfig.MOD_ID, "main"),
+            () -> StaticConfig.PROTOCOL_VERSION,
+            StaticConfig.PROTOCOL_VERSION::equals,
+            StaticConfig.PROTOCOL_VERSION::equals);
 
     private static int id = 0;
 

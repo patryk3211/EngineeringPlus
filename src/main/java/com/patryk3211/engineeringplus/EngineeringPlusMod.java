@@ -10,7 +10,6 @@ import com.patryk3211.engineeringplus.kinetic.client.ClientKineticNetwork;
 import com.patryk3211.engineeringplus.network.KineticNetworkPacket;
 import com.patryk3211.engineeringplus.network.PacketHandler;
 import com.patryk3211.engineeringplus.renderer.ModBlockEntityRenderers;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -18,11 +17,14 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.slf4j.Logger;
 
-@Mod(Config.MOD_ID)
+@Mod(StaticConfig.MOD_ID)
 public class EngineeringPlusMod {
     public static final Logger LOGGER = LogUtils.getLogger();
 
     public EngineeringPlusMod() {
+        EngineeringPlusConfig.init();
+        LOGGER.info("Registered configs!");
+
         // Register the registries
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 
@@ -30,11 +32,12 @@ public class EngineeringPlusMod {
         ModItems.ITEMS.register(modEventBus);
         ModBlockEntities.BLOCK_ENTITIES.register(modEventBus);
 
+        // Sided setups
         modEventBus.addListener(this::commonSetup);
         modEventBus.addListener(this::clientSetup);
 
+        // Other events
         modEventBus.addListener(ModCapabilities::registerCapabilities);
-
         modEventBus.addListener(ModBlockEntityRenderers::onRendererRegister);
 
         // Register Minecraft event listeners

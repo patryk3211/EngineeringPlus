@@ -108,7 +108,7 @@ public abstract class KineticEntity extends BlockEntity {
 
                     oldNetwork.remove();
                 }
-                neighbourNetwork.addMass(Math.abs(handler.getInertia() / handler.getSpeedMultiplier()), 0);
+                neighbourNetwork.addMass(Math.abs(handler.getInertia() * handler.getSpeedMultiplier()), 0);
                 System.out.println("Added " + handler.getInertia() + " to network (" + neighbourNetwork.getId() + ") mass " + neighbourNetwork.getInertia());
             });
         }
@@ -121,7 +121,7 @@ public abstract class KineticEntity extends BlockEntity {
             }
             for (Direction direction : checkHandlers.get(handler)) {
                 handlerNetwork.addTile(worldPosition, direction);
-                handlerNetwork.addMass(Math.abs(handler.getInertia() / handler.getSpeedMultiplier()), 0);
+                handlerNetwork.addMass(Math.abs(handler.getInertia() * handler.getSpeedMultiplier()), 0);
                 System.out.println("Added " + handler.getInertia() + " to a network (" + handlerNetwork.getId() + "), current mass " + handlerNetwork.getInertia());
             }
         }
@@ -139,7 +139,7 @@ public abstract class KineticEntity extends BlockEntity {
         for (Direction direction : directions) {
             entity.getCapability(ModCapabilities.KINETIC, direction).ifPresent(handler -> {
                 handler.setNetwork(resultNetwork);
-                resultNetwork.addMass(Math.abs(handler.getInertia() / handler.getSpeedMultiplier()), 0);
+                resultNetwork.addMass(Math.abs(handler.getInertia() * handler.getSpeedMultiplier()), 0);
             });
             resultNetwork.addTile(position, direction);
             tracePos(position.offset(direction.getNormal()), tiles, resultNetwork);

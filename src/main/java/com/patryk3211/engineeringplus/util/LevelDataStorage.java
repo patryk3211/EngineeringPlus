@@ -1,6 +1,6 @@
 package com.patryk3211.engineeringplus.util;
 
-import com.patryk3211.engineeringplus.Config;
+import com.patryk3211.engineeringplus.StaticConfig;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.saveddata.SavedData;
@@ -15,10 +15,10 @@ public class LevelDataStorage extends SavedData {
 
     public static LevelDataStorage of(ServerLevel level) {
         DimensionDataStorage storage = level.getDataStorage();
-        LevelDataStorage data = storage.get(LevelDataStorage::new, Config.MOD_ID);
+        LevelDataStorage data = storage.get(LevelDataStorage::new, StaticConfig.MOD_ID);
         if(data == null) {
             data = new LevelDataStorage(new CompoundTag());
-            storage.set(Config.MOD_ID, data);
+            storage.set(StaticConfig.MOD_ID, data);
         }
         return data;
     }
