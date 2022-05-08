@@ -1,6 +1,7 @@
 package com.patryk3211.engineeringplus.block;
 
 import com.patryk3211.engineeringplus.StaticConfig;
+import com.patryk3211.engineeringplus.block.pipe.CopperPipe;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -12,4 +13,6 @@ public class ModBlocks {
     public static final RegistryObject<Block> shaft = BLOCKS.register("shaft", Shaft::new);
     public static final RegistryObject<Block> handCrank = BLOCKS.register("hand_crank", HandCrank::new);
     public static final RegistryObject<Block> gearbox = BLOCKS.register("gearbox", Gearbox::new);
+
+    public static final RegistryObject<Block> copperPipe = BLOCKS.register("copper_pipe", CopperPipe::new);
 }
