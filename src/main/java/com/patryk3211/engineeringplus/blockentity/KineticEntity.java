@@ -81,12 +81,12 @@ public abstract class KineticEntity extends BlockEntity {
                     neighbourNetwork.addMass(Math.abs(oldNetwork.getInertia() * handler.getSpeedMultiplier()), oldNetwork.getSpeed());
                     System.out.println("Merged " + oldNetwork.getInertia() + " inertia into (" + neighbourNetwork.getId() + ") mass " + neighbourNetwork.getInertia());
 
+                    Set<IKineticHandler> processedHandlers = new HashSet<>();
+
                     // Merge old network
                     oldNetwork.tiles.forEach((position, directions) -> {
                         BlockEntity entity = level.getBlockEntity(position);
                         if(entity == null) return;
-
-                        Set<IKineticHandler> processedHandlers = new HashSet<>();
 
                         for (Direction direction : directions) {
                             LazyOptional<IKineticHandler> lazy = entity.getCapability(ModCapabilities.KINETIC, direction);
