@@ -14,6 +14,13 @@ public interface IElementHandler {
     ElementStack insert(ElementStack stack, boolean simulate);
 
     /**
+     * Checks if this handler can receive a given amount of elements
+     * @param amount Pressure [Pa]
+     * @return Amount that can be inserted (can be zero)
+     */
+    int canInsert(int amount);
+
+    /**
      * Extract the given amount of elements from this handler
      * @param amount Pressure to extract
      * @param simulate Should it actually be extracted

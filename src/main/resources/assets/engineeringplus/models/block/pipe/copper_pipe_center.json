@@ -1,0 +1,6 @@
+{
+  "parent": "engineeringplus:block/template/pipe_center",
+  "textures": {
+    "main": "engineeringplus:block/copper_pipe"
+  }
+}

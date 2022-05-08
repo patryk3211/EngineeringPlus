@@ -47,4 +47,9 @@ public class BasicElementHandler implements IElementHandler {
     public int getTotalPressure() {
         return totalPressure;
     }
+
+    @Override
+    public int canInsert(int amount) {
+        return amount;
+    }
 }
