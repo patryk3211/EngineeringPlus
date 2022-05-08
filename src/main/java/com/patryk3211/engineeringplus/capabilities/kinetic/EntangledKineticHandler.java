@@ -7,6 +7,12 @@ public class EntangledKineticHandler implements IKineticHandler {
         private IKineticNetwork network;
         private float speedMultiplier;
         private float angleOffset;
+
+        public DataStore() {
+            this.network = null;
+            this.speedMultiplier = 1.0f;
+            this.angleOffset = 0.0f;
+        }
     }
 
     private final DataStore store;
