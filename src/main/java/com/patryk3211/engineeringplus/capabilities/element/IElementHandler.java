@@ -15,22 +15,22 @@ public interface IElementHandler {
 
     /**
      * Checks if this handler can receive a given amount of elements
-     * @param amount Pressure [Pa]
+     * @param amount Amount [kg]
      * @return Amount that can be inserted (can be zero)
      */
     int canInsert(int amount);
 
     /**
      * Extract the given amount of elements from this handler
-     * @param amount Pressure to extract
+     * @param amount Amount to extract
      * @param simulate Should it actually be extracted
      * @return Collection of element stacks that was extracted
      */
     Collection<ElementStack> extract(int amount, boolean simulate);
 
     /**
-     * Get total pressure of all elements in this handler
-     * @return Pressure [Pa]
+     * Get total amount of all elements in this handler
+     * @return Amount [kg]
      */
-    int getTotalPressure();
+    int getTotalAmount();
 }

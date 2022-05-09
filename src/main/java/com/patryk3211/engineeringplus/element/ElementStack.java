@@ -7,26 +7,26 @@ public class ElementStack {
     public static final ElementStack EMPTY = new ElementStack(Elements.EMPTY.get(), 0, 0);
 
     public final Element element;
-    /** Pressure provided in Pa (pascal) **/
-    public int pressure;
+    /** Amount provided in kg (kilogram) **/
+    public int amount;
     /** Temperature provided in K (kelvin) **/
     public float temperature;
 
-    public ElementStack(Element element, int pressure) {
+    public ElementStack(Element element, int amount) {
         this.element = element;
-        this.pressure = pressure;
+        this.amount = amount;
         this.temperature = 0;
     }
 
-    public ElementStack(Element element, int pressure, float temperature) {
+    public ElementStack(Element element, int amount, float temperature) {
         this.element = element;
-        this.pressure = pressure;
+        this.amount = amount;
         this.temperature = temperature;
     }
 
     public ElementStack(CompoundTag tag) {
         this.element = Element.fromLocation(new ResourceLocation(tag.getString("id")));
-        this.pressure = tag.getInt("psr");
+        this.amount = tag.getInt("amt");
         this.temperature = tag.getFloat("temp");
     }
 
@@ -37,13 +37,13 @@ public class ElementStack {
         if(loc == null) return tag;
 
         tag.putString("id", loc.getNamespace() + ":" + loc.getPath());
-        tag.putInt("psr", pressure);
+        tag.putInt("amt", amount);
         tag.putFloat("temp", temperature);
 
         return tag;
     }
 
     public ElementStack copy() {
-        return new ElementStack(element, pressure, temperature);
+        return new ElementStack(element, amount, temperature);
     }
 }

@@ -42,15 +42,15 @@ public class PipeEntity extends BlockEntity {
         elementHandler = LazyOptional.of(() -> new BasicElementHandler() {
             @Override
             public ElementStack insert(ElementStack stack, boolean simulate) {
-                ElementStack inserted = super.insert(new ElementStack(stack.element, Math.min(flowLeft, stack.pressure), stack.temperature), simulate);
-                if(!simulate) flowLeft -= inserted.pressure;
+                ElementStack inserted = super.insert(new ElementStack(stack.element, Math.min(flowLeft, stack.amount), stack.temperature), simulate);
+                if(!simulate) flowLeft -= inserted.amount;
                 return inserted;
             }
 
             @Override
             public Collection<ElementStack> extract(int amount, boolean simulate) {
                 Collection<ElementStack> extracted = super.extract(Math.min(flowLeft, amount), simulate);
-                if(!simulate) extracted.forEach(stack -> flowLeft -= stack.pressure);
+                if(!simulate) extracted.forEach(stack -> flowLeft -= stack.amount);
                 return extracted;
             }
 
@@ -76,7 +76,7 @@ public class PipeEntity extends BlockEntity {
                 if(neighbour == null || !(lazyHandler = neighbour.getCapability(ModCapabilities.ELEMENT, dir.getOpposite())).isPresent()) return;
 
                 IElementHandler neighbourHandler = lazyHandler.orElse(null);
-                int difference = handler.getTotalPressure() - neighbourHandler.getTotalPressure();
+                int difference = handler.getTotalAmount() - neighbourHandler.getTotalAmount();
                 if(difference <= 0) return;
 
                 int maxMoveAmount = neighbourHandler.canInsert(difference / 2);

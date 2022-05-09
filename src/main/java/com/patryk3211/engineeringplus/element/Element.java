@@ -28,8 +28,8 @@ public class Element extends ForgeRegistryEntry<Element> {
         this.solidBlock = solidBlock;
     }
 
-    public State getState(float temperature, float pressure) {
-        return properties.getState(temperature, pressure);
+    public State getState(float temperature) {
+        return properties.getState(temperature);
     }
 
     public String getDescriptionId() {
@@ -39,25 +39,25 @@ public class Element extends ForgeRegistryEntry<Element> {
     }
 
     public static class Properties {
-        public static final Properties EMPTY = new Properties((temp, psr) -> State.GAS);
-        public static final Properties WATER = new Properties((temp, psr) -> {
-            if(temp < 73 || (psr / (temp - 73)) > 500) return State.SOLID;
-            else if((temp * 1000) / psr >= 3.73) return State.GAS;
-            else return State.LIQUID;
-        });
+        public static final Properties EMPTY = new Properties(0, 0);
+        public static final Properties WATER = new Properties(373.15f, 273.15f);
 
-        private final IElementStateProvider stateProvider;
+        private final float boilingPoint;
+        private final float meltingPoint;
 
-        public Properties(IElementStateProvider stateProvider) {
-            this.stateProvider = stateProvider;
+        public Properties(float boilingPoint, float meltingPoint) {
+            this.boilingPoint = boilingPoint;
+            this.meltingPoint = meltingPoint;
         }
 
-        public State getState(float temperature, float pressure) {
-            return stateProvider.getState(temperature, pressure);
+        public State getState(float temperature) {
+            if(temperature > boilingPoint) return State.GAS;
+            else if(temperature > meltingPoint) return State.LIQUID;
+            else return State.SOLID;
         }
 
         public static Properties of(Properties properties) {
-            return new Properties(properties.stateProvider);
+            return new Properties(properties.boilingPoint, properties.meltingPoint);
         }
     }
 }
