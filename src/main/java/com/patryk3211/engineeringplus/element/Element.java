@@ -32,32 +32,32 @@ public class Element extends ForgeRegistryEntry<Element> {
         return properties.getState(temperature);
     }
 
+    public float getHeatCapacity() {
+        return properties.heatCapacity;
+    }
+
+    public int getPressure(int amount, float volume, float temperature) {
+        return properties.pressureProvider.getPressure(amount, volume, temperature);
+    }
+
     public String getDescriptionId() {
         if(descriptionId == null)
             descriptionId = Util.makeDescriptionId("element", getRegistryName());
         return descriptionId;
     }
 
-    public static class Properties {
-        public static final Properties EMPTY = new Properties(0, 0);
-        public static final Properties WATER = new Properties(373.15f, 273.15f);
-
-        private final float boilingPoint;
-        private final float meltingPoint;
-
-        public Properties(float boilingPoint, float meltingPoint) {
-            this.boilingPoint = boilingPoint;
-            this.meltingPoint = meltingPoint;
-        }
+    public record Properties(float boilingPoint, float meltingPoint, float heatCapacity, IPressureProvider pressureProvider) {
+        public static final Properties EMPTY = new Properties(0, 0, 0, (amount, volume, temperature) -> 0);
+        public static final Properties WATER = new Properties(373.15f, 273.15f, 4.182f, (amount, volume, temperature) -> (int)(amount * temperature * 4.182f / volume));
 
         public State getState(float temperature) {
-            if(temperature > boilingPoint) return State.GAS;
-            else if(temperature > meltingPoint) return State.LIQUID;
+            if (temperature > boilingPoint) return State.GAS;
+            else if (temperature > meltingPoint) return State.LIQUID;
             else return State.SOLID;
         }
 
         public static Properties of(Properties properties) {
-            return new Properties(properties.boilingPoint, properties.meltingPoint);
+            return new Properties(properties.boilingPoint, properties.meltingPoint, properties.heatCapacity, properties.pressureProvider);
         }
     }
 }

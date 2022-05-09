@@ -39,7 +39,7 @@ public class PipeEntity extends BlockEntity {
         flowPerTick = pipe.flowRate;
         maxPressure = pipe.maxPressure;
 
-        elementHandler = LazyOptional.of(() -> new BasicElementHandler() {
+        elementHandler = LazyOptional.of(() -> new BasicElementHandler(pipe.volume) {
             @Override
             public ElementStack insert(ElementStack stack, boolean simulate) {
                 ElementStack inserted = super.insert(new ElementStack(stack.element, Math.min(flowLeft, stack.amount), stack.temperature), simulate);

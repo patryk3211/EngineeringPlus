@@ -21,12 +21,14 @@ import org.jetbrains.annotations.Nullable;
 public abstract class Pipe extends Block implements EntityBlock {
     public final int flowRate;
     public final int maxPressure;
+    public final float volume;
 
-    public Pipe(Properties properties, int flowRate, int maxPressure) {
+    public Pipe(Properties properties, int flowRate, int maxPressure, float volume) {
         super(properties);
 
         this.flowRate = flowRate;
         this.maxPressure = maxPressure;
+        this.volume = volume;
 
         registerDefaultState(defaultBlockState()
                 .setValue(BlockStateProperties.NORTH, false)

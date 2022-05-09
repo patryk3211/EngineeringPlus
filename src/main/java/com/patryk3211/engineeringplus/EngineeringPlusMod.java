@@ -5,7 +5,6 @@ import com.patryk3211.engineeringplus.block.ModBlocks;
 import com.patryk3211.engineeringplus.blockentity.ModBlockEntities;
 import com.patryk3211.engineeringplus.capabilities.ModCapabilities;
 import com.patryk3211.engineeringplus.element.Element;
-import com.patryk3211.engineeringplus.element.ElementStateDiagrams;
 import com.patryk3211.engineeringplus.element.Elements;
 import com.patryk3211.engineeringplus.item.ModItems;
 import com.patryk3211.engineeringplus.kinetic.KineticNetwork;
@@ -14,8 +13,6 @@ import com.patryk3211.engineeringplus.network.KineticNetworkPacket;
 import com.patryk3211.engineeringplus.network.PacketHandler;
 import com.patryk3211.engineeringplus.renderer.ModBlockEntityRenderers;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
@@ -52,8 +49,6 @@ public class EngineeringPlusMod {
         modEventBus.addListener(ModCapabilities::registerCapabilities);
 
         // Register Minecraft event listeners
-        MinecraftForge.EVENT_BUS.addListener(this::addReloadListener);
-
         KineticNetwork.registerEvents();
     }
 
@@ -64,11 +59,5 @@ public class EngineeringPlusMod {
 
     private void clientSetup(final FMLClientSetupEvent event) {
         ClientKineticNetwork.registerEvents();
-    }
-
-    private void addReloadListener(final AddReloadListenerEvent event) {
-        event.addListener(new ElementStateDiagrams());
-
-        LOGGER.info("Registered resource reload listeners!");
     }
 }
