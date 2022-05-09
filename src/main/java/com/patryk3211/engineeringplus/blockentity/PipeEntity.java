@@ -7,6 +7,8 @@ import com.patryk3211.engineeringplus.capabilities.element.IElementHandler;
 import com.patryk3211.engineeringplus.element.ElementStack;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
@@ -17,7 +19,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Collection;
 
 public class PipeEntity extends BlockEntity {
-    private final LazyOptional<IElementHandler> elementHandler;
+    private final LazyOptional<BasicElementHandler> elementHandler;
     private int flowLeft;
     private final int flowPerTick;
     private final int maxPressure;
@@ -94,5 +96,19 @@ public class PipeEntity extends BlockEntity {
             else return LazyOptional.empty();
         }
         return super.getCapability(cap, side);
+    }
+
+    @Override
+    public void load(CompoundTag tag) {
+        super.load(tag);
+
+        elementHandler.ifPresent(handler -> handler.deserializeNBT(tag.getList("elements", Tag.TAG_COMPOUND)));
+    }
+
+    @Override
+    protected void saveAdditional(CompoundTag tag) {
+        super.saveAdditional(tag);
+
+        elementHandler.ifPresent(handler -> tag.put("elements", handler.serializeNBT()));
     }
 }

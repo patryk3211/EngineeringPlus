@@ -42,4 +42,8 @@ public class ElementStack {
 
         return tag;
     }
+
+    public ElementStack copy() {
+        return new ElementStack(element, pressure, temperature);
+    }
 }
