@@ -19,9 +19,11 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.slf4j.Logger;
 
-@Mod(StaticConfig.MOD_ID)
+@Mod(EngineeringPlusMod.ID)
 public class EngineeringPlusMod {
     public static final Logger LOGGER = LogUtils.getLogger();
+
+    public static final String ID = "engineeringplus";
 
     public EngineeringPlusMod() {
         EngineeringPlusConfig.init();
