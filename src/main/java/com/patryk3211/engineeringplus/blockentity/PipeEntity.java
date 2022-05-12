@@ -3,8 +3,8 @@ package com.patryk3211.engineeringplus.blockentity;
 import com.patryk3211.engineeringplus.block.pipe.Pipe;
 import com.patryk3211.engineeringplus.capabilities.ModCapabilities;
 import com.patryk3211.engineeringplus.capabilities.element.BasicElementHandler;
-import com.patryk3211.engineeringplus.capabilities.element.IElementHandler;
 import com.patryk3211.engineeringplus.element.ElementStack;
+import com.patryk3211.engineeringplus.util.ElementHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -69,21 +69,7 @@ public class PipeEntity extends BlockEntity {
         int started = nextProcessedDirection;
         do {
             Direction dir = Direction.from3DDataValue(nextProcessedDirection);
-            getCapability(ModCapabilities.ELEMENT, dir).ifPresent(handler -> {
-                BlockEntity neighbour = level.getBlockEntity(worldPosition.offset(dir.getNormal()));
-
-                LazyOptional<IElementHandler> lazyHandler;
-                if(neighbour == null || !(lazyHandler = neighbour.getCapability(ModCapabilities.ELEMENT, dir.getOpposite())).isPresent()) return;
-
-                IElementHandler neighbourHandler = lazyHandler.orElse(null);
-                int difference = handler.getTotalAmount() - neighbourHandler.getTotalAmount();
-                if(difference <= 0) return;
-
-                int maxMoveAmount = neighbourHandler.canInsert(difference / 2);
-                Collection<ElementStack> extractedElements = handler.extract(maxMoveAmount, false);
-
-                for (ElementStack elementStack : extractedElements) neighbourHandler.insert(elementStack, false);
-            });
+            ElementHelper.flow(this, dir);
             if(flowLeft == 0) break;
         } while((nextProcessedDirection = (nextProcessedDirection + 1) % 6) != started);
     }

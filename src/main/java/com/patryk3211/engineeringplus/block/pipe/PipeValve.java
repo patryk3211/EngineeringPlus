@@ -1,21 +1,21 @@
 package com.patryk3211.engineeringplus.block.pipe;
 
+import com.patryk3211.engineeringplus.block.KineticBlock;
 import com.patryk3211.engineeringplus.block.ModBlockProperties;
 import com.patryk3211.engineeringplus.blockentity.PipeValveEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import org.jetbrains.annotations.Nullable;
 
-public abstract class PipeValve extends Block implements EntityBlock {
-    public final float maxFlowRate;
-    public final float maxPressure;
+public abstract class PipeValve extends KineticBlock {
+    public final int maxFlowRate;
+    public final int maxPressure;
     public final float volume;
 
     public PipeValve(Properties properties, int maxFlowRate, int maxPressure, float volume) {
