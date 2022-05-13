@@ -42,8 +42,8 @@ public abstract class PipeValve extends KineticBlock {
 
     private static final VoxelShape SHAFT_N = Block.box(5.5, 5.5, 0, 10.5, 10.5, 4);
     private static final VoxelShape SHAFT_S = Block.box(5.5, 5.5, 12, 10.5, 10.5, 16);
-    private static final VoxelShape SHAFT_E = Block.box(0, 5.5, 5.5, 4, 10.5, 10.5);
-    private static final VoxelShape SHAFT_W = Block.box(12, 5.5, 5.5, 16, 10.5, 10.5);
+    private static final VoxelShape SHAFT_W = Block.box(0, 5.5, 5.5, 4, 10.5, 10.5);
+    private static final VoxelShape SHAFT_E = Block.box(12, 5.5, 5.5, 16, 10.5, 10.5);
     private static final VoxelShape SHAFT_D = Block.box(5.5, 0, 5.5, 10.5, 4, 10.5);
     private static final VoxelShape SHAFT_U = Block.box(5.5, 12, 5.5, 10.5, 16, 10.5);
 
