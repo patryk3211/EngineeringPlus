@@ -25,6 +25,9 @@ public class ElementHelper {
             Collection<ElementStack> extractedElements = handler.extract(maxMoveAmount, false);
 
             for (ElementStack elementStack : extractedElements) neighbourHandler.insert(elementStack, false);
+
+            entity.setChanged();
+            neighbour.setChanged();
         });
     }
 }

@@ -6,6 +6,7 @@ import com.patryk3211.engineeringplus.util.DirectionUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
@@ -16,9 +17,21 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.phys.shapes.BooleanOp;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
 public abstract class Pipe extends Block implements EntityBlock {
+    private static final VoxelShape CENTER = Block.box(5, 5, 5, 11, 11, 11);
+    private static final VoxelShape NORTH = Block.box(5, 5, 0, 11, 11, 5);
+    private static final VoxelShape SOUTH = Block.box(5, 5, 11, 11, 11, 16);
+    private static final VoxelShape WEST = Block.box(0, 5, 5, 5, 11, 11);
+    private static final VoxelShape EAST = Block.box(11, 5, 5, 16, 11, 11);
+    private static final VoxelShape DOWN = Block.box(5, 0, 5, 11, 5, 11);
+    private static final VoxelShape UP = Block.box(5, 11, 5, 11, 16, 11);
+
     public final int flowRate;
     public final int maxPressure;
     public final float volume;
@@ -83,6 +96,18 @@ public abstract class Pipe extends Block implements EntityBlock {
         BooleanProperty dirProperty = DirectionUtils.directionToProperty(dir);
         if(state.getValue(dirProperty) != connectable)
             level.setBlock(pos, state.setValue(dirProperty, connectable), Block.UPDATE_CLIENTS);
+    }
+
+    @Override
+    public VoxelShape getShape(BlockState state, BlockGetter block, BlockPos pos, CollisionContext context) {
+        VoxelShape shape = CENTER;
+        if(state.getValue(BlockStateProperties.NORTH)) shape = Shapes.joinUnoptimized(shape, NORTH, BooleanOp.OR);
+        if(state.getValue(BlockStateProperties.SOUTH)) shape = Shapes.joinUnoptimized(shape, SOUTH, BooleanOp.OR);
+        if(state.getValue(BlockStateProperties.EAST)) shape = Shapes.joinUnoptimized(shape, EAST, BooleanOp.OR);
+        if(state.getValue(BlockStateProperties.WEST)) shape = Shapes.joinUnoptimized(shape, WEST, BooleanOp.OR);
+        if(state.getValue(BlockStateProperties.DOWN)) shape = Shapes.joinUnoptimized(shape, DOWN, BooleanOp.OR);
+        if(state.getValue(BlockStateProperties.UP)) shape = Shapes.joinUnoptimized(shape, UP, BooleanOp.OR);
+        return shape.optimize();
     }
 
     @Nullable
