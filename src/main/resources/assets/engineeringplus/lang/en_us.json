@@ -1,5 +1,9 @@
 {
     "block.engineeringplus.shaft": "Shaft",
 
+    "block.engineeringplus.copper_pipe": "Copper Pipe",
+
+    "block.engineeringplus.copper_valve": "Copper Valve",
+
     "config.engineeringplus.common.debug_enabled": "Enable Debug Features"
 }
