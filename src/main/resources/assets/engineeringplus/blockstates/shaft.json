@@ -1,8 +1,8 @@
 {
     "variants": {
-        "axis=z,model_part=static": { "model": "minecraft:block/air" },
-        "axis=y,model_part=static": { "model": "minecraft:block/air" },
-        "axis=x,model_part=static": { "model": "minecraft:block/air" },
+        "axis=z,model_part=static": { "model": "engineeringplus:block/shaft/particle" },
+        "axis=y,model_part=static": { "model": "engineeringplus:block/shaft/particle" },
+        "axis=x,model_part=static": { "model": "engineeringplus:block/shaft/particle" },
 
         "axis=z,model_part=shaft": { "model": "engineeringplus:block/shaft/16" },
         "axis=y,model_part=shaft": { "model": "engineeringplus:block/shaft/16", "x": 90 },
