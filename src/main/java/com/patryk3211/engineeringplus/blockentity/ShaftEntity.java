@@ -17,7 +17,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 public class ShaftEntity extends KineticEntity {
-    private final LazyOptional<IKineticHandler> kineticHandler = LazyOptional.of(() -> new BasicKineticHandler(0.5f));
+    private final LazyOptional<IKineticHandler> kineticHandler = LazyOptional.of(() -> new BasicKineticHandler(0.5f, 1f));
 
     public ShaftEntity(BlockPos pos, BlockState state) {
         super(ModBlockEntities.shaft.get(), pos, state);

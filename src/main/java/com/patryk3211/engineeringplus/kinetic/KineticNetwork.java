@@ -32,6 +32,7 @@ public class KineticNetwork implements IKineticNetwork {
     private float speed;
     private float angle;
     private float inertia;
+    private float totalFriction;
 
     public KineticNetwork(UUID id, Level level) {
         this.id = id;
@@ -70,6 +71,10 @@ public class KineticNetwork implements IKineticNetwork {
         return inertia;
     }
 
+    public float getFriction() {
+        return totalFriction;
+    }
+
     @Override
     public void changeSpeed(float amount) {
         speed += amount;
@@ -97,6 +102,10 @@ public class KineticNetwork implements IKineticNetwork {
 
     public void removeMass(float mass) {
         inertia -= mass;
+    }
+
+    public void addFriction(float friction) {
+        totalFriction += friction;
     }
 
     public void setValues(float speed, float angle) {
@@ -222,6 +231,9 @@ public class KineticNetwork implements IKineticNetwork {
         if(networks == null) return;
 
         for (KineticNetwork network : networks.values()) {
+            // Apply friction
+            network.speed -= Math.signum(network.speed) * network.totalFriction / network.inertia * 0.05f;
+
             network.angle = (network.angle + network.speed * 0.05f / 60f) % 360f;
         }
         if(++tickCount >= 20) {

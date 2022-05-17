@@ -5,11 +5,14 @@ import com.patryk3211.engineeringplus.kinetic.IKineticNetwork;
 public class BasicKineticHandler implements IKineticHandler {
     private IKineticNetwork network;
     private final float inertialMass;
+
+    private final float friction;
     private float speedMultiplier = 1;
     private float angleOffset = 0;
 
-    public BasicKineticHandler(float inertialMass) {
+    public BasicKineticHandler(float inertialMass, float friction) {
         this.inertialMass = inertialMass;
+        this.friction = friction;
     }
 
     @Override
@@ -37,6 +40,11 @@ public class BasicKineticHandler implements IKineticHandler {
     @Override
     public float getInertia() {
         return inertialMass;
+    }
+
+    @Override
+    public float getFriction() {
+        return friction;
     }
 
     @Override
