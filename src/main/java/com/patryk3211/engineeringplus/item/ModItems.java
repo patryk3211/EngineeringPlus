@@ -18,4 +18,6 @@ public class ModItems {
     public static final RegistryObject<Item> copperPipe = ITEMS.register("copper_pipe", () -> new BlockItem(ModBlocks.copperPipe.get(), new Item.Properties()));
 
     public static final RegistryObject<Item> copperValve = ITEMS.register("copper_valve", () -> new BlockItem(ModBlocks.copperValve.get(), new Item.Properties()));
+
+    public static final RegistryObject<Item> valveHandle = ITEMS.register("valve_handle", () -> new BlockItem(ModBlocks.valveHandle.get(), new Item.Properties()));
 }

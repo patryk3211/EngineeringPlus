@@ -40,7 +40,8 @@ public class ClientKineticNetwork implements IKineticNetwork {
 
     public void setValues(float speed, float angle) {
         this.speed = speed;
-        this.angle = angle;
+        this.angleLast = angle;
+        this.angleChange = speed * 0.3f;
     }
 
     public static void remove(UUID id) {

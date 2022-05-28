@@ -16,4 +16,6 @@ public class ModBlockEntities {
 
     public static final RegistryObject<BlockEntityType<PipeEntity>> pipe = BLOCK_ENTITIES.register("pipe", () -> BlockEntityType.Builder.of(PipeEntity::new, ModBlocks.copperPipe.get()).build(null));
     public static final RegistryObject<BlockEntityType<PipeValveEntity>> pipe_valve = BLOCK_ENTITIES.register("pipe_valve", () -> BlockEntityType.Builder.of(PipeValveEntity::new, ModBlocks.copperValve.get()).build(null));
+
+    public static final RegistryObject<BlockEntityType<ValveHandleEntity>> valveHandle = BLOCK_ENTITIES.register("valve_handle", () -> BlockEntityType.Builder.of(ValveHandleEntity::new, ModBlocks.valveHandle.get()).build(null));
 }

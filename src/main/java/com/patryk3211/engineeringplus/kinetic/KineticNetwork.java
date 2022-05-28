@@ -168,6 +168,7 @@ public class KineticNetwork implements IKineticNetwork {
                 knet.speed = network.getFloat("speed");
                 knet.angle = network.getFloat("angle");
                 knet.inertia = network.getFloat("mass");
+                knet.totalFriction = network.getFloat("friction");
             } else EngineeringPlusMod.LOGGER.warn("Kinetic networks entry not a CompoundTag, skipping.");
         }
     }
@@ -193,6 +194,7 @@ public class KineticNetwork implements IKineticNetwork {
             netTag.putFloat("speed", network.speed);
             netTag.putFloat("angle", network.angle);
             netTag.putFloat("mass", network.inertia);
+            netTag.putFloat("friction", network.totalFriction);
 
             networks.add(netTag);
         }
@@ -232,9 +234,12 @@ public class KineticNetwork implements IKineticNetwork {
 
         for (KineticNetwork network : networks.values()) {
             // Apply friction
-            network.speed -= Math.signum(network.speed) * network.totalFriction / network.inertia * 0.05f;
+            // If current network speed is smaller than the speed change from applied friction, stop the network
+            float appliedFriction = network.totalFriction / network.inertia * 0.05f;
+            if(Math.abs(network.speed) < appliedFriction) network.speed = 0;
+            else network.speed -= Math.signum(network.speed) * appliedFriction;
 
-            network.angle = (network.angle + network.speed * 0.05f / 60f) % 360f;
+            network.angle = (network.angle + network.speed * 0.05f / 60f * 360f) % 360f;
         }
         if(++tickCount >= 20) {
             for (KineticNetwork network : networks.values()) network.syncValues();

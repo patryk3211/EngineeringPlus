@@ -1,0 +1,17 @@
+{
+    "variants": {
+        "facing=down,model_part=static": { "model": "minecraft:block/air" },
+        "facing=up,model_part=static": { "model": "minecraft:block/air" },
+        "facing=north,model_part=static": { "model": "minecraft:block/air" },
+        "facing=south,model_part=static": { "model": "minecraft:block/air" },
+        "facing=east,model_part=static": { "model": "minecraft:block/air" },
+        "facing=west,model_part=static": { "model": "minecraft:block/air" },
+
+        "facing=down,model_part=shaft": { "model": "engineeringplus:block/valve_handle" },
+        "facing=up,model_part=shaft": { "model": "engineeringplus:block/valve_handle", "x": 180 },
+        "facing=north,model_part=shaft": { "model": "engineeringplus:block/valve_handle", "x": -90 },
+        "facing=south,model_part=shaft": { "model": "engineeringplus:block/valve_handle", "x": 90 },
+        "facing=east,model_part=shaft": { "model": "engineeringplus:block/valve_handle", "x": 90, "y": -90 },
+        "facing=west,model_part=shaft": { "model": "engineeringplus:block/valve_handle", "x": 90, "y": 90 }
+    }
+}

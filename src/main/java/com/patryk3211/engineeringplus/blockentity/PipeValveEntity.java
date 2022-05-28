@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class PipeValveEntity extends KineticEntity {
-    private final LazyOptional<IKineticHandler> kineticHandler = LazyOptional.of(() -> new BasicKineticHandler(1, 3));
+    private final LazyOptional<IKineticHandler> kineticHandler = LazyOptional.of(() -> new BasicKineticHandler(1, 1));
     private final LazyOptional<FlowElementHandler> elementHandler;
 
     private final int maxFlow;

@@ -1,6 +1,7 @@
 package com.patryk3211.engineeringplus.capabilities.kinetic;
 
 import com.patryk3211.engineeringplus.kinetic.IKineticNetwork;
+import com.patryk3211.engineeringplus.util.KineticUtils;
 
 public class EntangledKineticHandler implements IKineticHandler {
     public static class DataStore {
@@ -37,7 +38,7 @@ public class EntangledKineticHandler implements IKineticHandler {
 
     @Override
     public float getAngle() {
-        return ((store.network.getAngle() * speedMultiplier) + angleOffset) % 360;
+        return KineticUtils.normalizeAngle((store.network.getAngle() * speedMultiplier) + angleOffset);
     }
 
     @Override

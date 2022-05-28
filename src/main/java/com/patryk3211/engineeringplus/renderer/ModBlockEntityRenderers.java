@@ -26,7 +26,8 @@ public class ModBlockEntityRenderers {
 
         registry.registerBlockEntities(List.of(
                 ModBlockEntities.shaft.get(),
-                ModBlockEntities.pipe_valve.get()
+                ModBlockEntities.pipe_valve.get(),
+                ModBlockEntities.valveHandle.get()
         ), context -> new KineticRenderer());
     }
 }

@@ -18,4 +18,6 @@ public class ModBlocks {
     public static final RegistryObject<Block> copperPipe = BLOCKS.register("copper_pipe", CopperPipe::new);
 
     public static final RegistryObject<Block> copperValve = BLOCKS.register("copper_valve", CopperValve::new);
+
+    public static final RegistryObject<Block> valveHandle = BLOCKS.register("valve_handle", ValveHandle::new);
 }
