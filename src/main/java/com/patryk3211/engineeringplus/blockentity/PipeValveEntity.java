@@ -55,6 +55,7 @@ public class PipeValveEntity extends KineticEntity {
             kineticHandler.ifPresent(handler -> {
                 float angle = handler.getAngle();
                 float openAmount = (float)(Math.cos(Math.toRadians(angle) * 2) + 1) / 2.0f;
+                openAmount = Math.round(openAmount * 100) / 100f;
                 atomicFlow.set(openAmount * maxFlow);
             });
             elementHandler.ifPresent(handler -> handler.setFlow(atomicFlow.get().intValue()));

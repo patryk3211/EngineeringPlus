@@ -60,11 +60,11 @@ public class BasicElementHandler implements IElementHandler, INBTSerializable<Li
         int finalTotalAmount = totalAmount;
         float extractedThermal = 0;
         for (ElementStack element : elements) {
-            // Cannot move a solid.
-            if(element.element.getState(element.temperature) == Element.State.SOLID) continue;
-
             // Recalculate temperature from thermal energy
             if(tempRecalc) element.temperature = totalThermalEnergy * element.amount / totalAmount / (element.amount * element.element.getHeatCapacity());
+
+            // Cannot move a solid.
+            if(element.element.getState(element.temperature) == Element.State.SOLID) continue;
 
             ElementStack extractedStack = new ElementStack(element.element, element.amount / totalAmount * amount, element.temperature);
             if(!simulate) element.amount -= extractedStack.amount;
