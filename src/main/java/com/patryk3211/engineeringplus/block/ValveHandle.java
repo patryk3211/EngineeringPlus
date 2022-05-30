@@ -52,7 +52,7 @@ public class ValveHandle extends KineticBlock {
 
             float angleDistance = KineticUtils.signedAngleDistance(currentAngle, targetAngle);
             float force = handler.calculateForce(angleDistance / 360f * 60f * 20f);
-            handler.applyForce(Math.min(Math.abs(force) / 1000f, 10f) * Math.signum(force));
+            handler.applyForce(Math.max(Math.min(Math.abs(force) / 1000f, 10f), 6f) * Math.signum(force));
         });
 
         return InteractionResult.SUCCESS;
