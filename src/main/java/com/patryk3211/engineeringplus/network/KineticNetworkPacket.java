@@ -38,6 +38,7 @@ public class KineticNetworkPacket {
     private final Type type;
     private final float speed;
     private final float angle;
+    private final float speedChange;
     private final Collection<Network> networks;
 
     public KineticNetworkPacket(Type type) {
@@ -45,6 +46,7 @@ public class KineticNetworkPacket {
         this.networkId = null;
         this.speed = 0;
         this.angle = 0;
+        this.speedChange = 0;
         this.networks = null;
     }
 
@@ -53,14 +55,16 @@ public class KineticNetworkPacket {
         this.type = type;
         this.speed = 0;
         this.angle = 0;
+        this.speedChange = 0;
         this.networks = null;
     }
 
-    public KineticNetworkPacket(UUID networkId, Type type, float speed, float angle) {
+    public KineticNetworkPacket(UUID networkId, Type type, float speed, float angle, float speedChange) {
         this.networkId = networkId;
         this.type = type;
         this.speed = speed;
         this.angle = angle;
+        this.speedChange = speedChange;
         this.networks = null;
     }
 
@@ -69,6 +73,7 @@ public class KineticNetworkPacket {
         this.type = type;
         this.speed = 0;
         this.angle = 0;
+        this.speedChange = 0;
         this.networks = networks;
     }
 
@@ -84,6 +89,7 @@ public class KineticNetworkPacket {
                 buffer.writeUUID(packet.networkId);
                 buffer.writeFloat(packet.speed);
                 buffer.writeFloat(packet.angle);
+                buffer.writeFloat(packet.speedChange);
                 break;
             case NETWORKS:
                 buffer.writeVarInt(packet.networks.size());
@@ -97,7 +103,7 @@ public class KineticNetworkPacket {
         return switch(type) {
             case DELETE_ALL -> new KineticNetworkPacket(type);
             case CREATE_NETWORK, DELETE_NETWORK -> new KineticNetworkPacket(buffer.readUUID(), type);
-            case UPDATE_VALUES -> new KineticNetworkPacket(buffer.readUUID(), type, buffer.readFloat(), buffer.readFloat());
+            case UPDATE_VALUES -> new KineticNetworkPacket(buffer.readUUID(), type, buffer.readFloat(), buffer.readFloat(), buffer.readFloat());
             case NETWORKS -> {
                 List<Network> networks = new LinkedList<>();
                 int size = buffer.readVarInt();
@@ -117,12 +123,12 @@ public class KineticNetworkPacket {
         switch(packet.type) {
             case CREATE_NETWORK -> new ClientKineticNetwork(packet.networkId);
             case DELETE_NETWORK -> ClientKineticNetwork.remove(packet.networkId);
-            case UPDATE_VALUES -> ClientKineticNetwork.getNetwork(packet.networkId).setValues(packet.speed, packet.angle);
+            case UPDATE_VALUES -> ClientKineticNetwork.getNetwork(packet.networkId).setValues(packet.speed, packet.angle, packet.speedChange);
             case DELETE_ALL -> ClientKineticNetwork.removeAll();
             case NETWORKS -> {
                 for (Network network : packet.networks) {
                     ClientKineticNetwork knet = new ClientKineticNetwork(network.id);
-                    knet.setValues(network.speed, network.angle);
+                    knet.setValues(network.speed, network.angle, packet.speedChange);
                 }
             }
         }

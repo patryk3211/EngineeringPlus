@@ -17,7 +17,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 public class ValveHandleEntity extends KineticEntity {
-    public final LazyOptional<IKineticHandler> kineticHandler = LazyOptional.of(() -> new BasicKineticHandler(0.5f, 0.1f));
+    public final LazyOptional<IKineticHandler> kineticHandler = LazyOptional.of(() -> new BasicKineticHandler(0.5f, 0.3f));
 
     public ValveHandleEntity(BlockPos pos, BlockState state) {
         super(ModBlockEntities.valveHandle.get(), pos, state);

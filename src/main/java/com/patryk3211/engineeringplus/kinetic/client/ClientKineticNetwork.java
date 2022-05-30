@@ -23,6 +23,7 @@ public class ClientKineticNetwork implements IKineticNetwork {
 
     private final UUID id;
 
+    private float speedChange;
     private float speed;
     private float angle;
     private float angleLast;
@@ -38,7 +39,8 @@ public class ClientKineticNetwork implements IKineticNetwork {
         networks.put(id, this);
     }
 
-    public void setValues(float speed, float angle) {
+    public void setValues(float speed, float angle, float speedChange) {
+        this.speedChange = speedChange;
         this.speed = speed;
         this.angleLast = angle;
         this.angleChange = speed * 0.3f;
@@ -126,6 +128,7 @@ public class ClientKineticNetwork implements IKineticNetwork {
         if(Minecraft.getInstance().isPaused()) return;
 
         networks.forEach((id, network) -> {
+            network.speed += network.speedChange;
             network.angleLast = (network.angleLast + network.angleChange) % 360; // Advance lastAngle by 1 tick time
             network.angle = network.angleLast; // Synchronize angle and lastAngle
             network.angleChange = network.speed * 0.3f; // speed [rpm] * (1 tick / 60 seconds * 360 degrees) = speed [rpm] * 0.3f

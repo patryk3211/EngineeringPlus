@@ -29,6 +29,9 @@ public class KineticNetwork implements IKineticNetwork {
     private final UUID id;
     private final Level level;
 
+    private float speedChange;
+    private float lastSpeed;
+
     private float speed;
     private float angle;
     private float inertia;
@@ -115,7 +118,7 @@ public class KineticNetwork implements IKineticNetwork {
 
     public void syncValues() {
         // TODO: [06.05.2022] This should only send the packet to players in range of this network.
-        PacketHandler.CHANNEL.send(PacketDistributor.ALL.noArg(), new KineticNetworkPacket(id, KineticNetworkPacket.Type.UPDATE_VALUES, speed, angle));
+        PacketHandler.CHANNEL.send(PacketDistributor.ALL.noArg(), new KineticNetworkPacket(id, KineticNetworkPacket.Type.UPDATE_VALUES, speed, angle, speedChange));
     }
 
     /* Start of static functions */
@@ -229,6 +232,8 @@ public class KineticNetwork implements IKineticNetwork {
 
     static int tickCount = 0;
     private static void onWorldTick(final TickEvent.WorldTickEvent event) {
+        if(event.phase == TickEvent.Phase.START) return;
+
         Map<UUID, KineticNetwork> networks = networksByDims.get(event.world.dimension());
         if(networks == null) return;
 
@@ -238,6 +243,14 @@ public class KineticNetwork implements IKineticNetwork {
             float appliedFriction = network.totalFriction / network.inertia * 0.05f;
             if(Math.abs(network.speed) < appliedFriction) network.speed = 0;
             else network.speed -= Math.signum(network.speed) * appliedFriction;
+
+            float speedChange = network.speed - network.lastSpeed;
+            if(network.speedChange != speedChange) {
+                // Sync network values
+                network.speedChange = speedChange;
+                network.syncValues();
+            }
+            network.lastSpeed = network.speed;
 
             network.angle = (network.angle + network.speed * 0.05f / 60f * 360f) % 360f;
         }
