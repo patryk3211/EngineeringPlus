@@ -70,7 +70,7 @@ public class PipeValveEntity extends KineticEntity {
             };
             Direction dir = Direction.from3DDataValue(nextProcessedDirection + dirOffset);
             ElementHelper.flow(this, dir);
-        } while((nextProcessedDirection = (nextProcessedDirection + 1) % 6) != started);
+        } while((nextProcessedDirection = (nextProcessedDirection + 1) % 2) != started);
     }
 
     public Direction getShaftDirection() {
