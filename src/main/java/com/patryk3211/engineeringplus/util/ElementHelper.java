@@ -22,9 +22,12 @@ public class ElementHelper {
             if(difference <= 0) return;
 
             int maxMoveAmount = neighbourHandler.canInsert(difference / 2);
+            if(maxMoveAmount == 0) return;
+
             Collection<ElementStack> extractedElements = handler.extract(maxMoveAmount, false);
 
-            for (ElementStack elementStack : extractedElements) neighbourHandler.insert(elementStack, false);
+            for (ElementStack elementStack : extractedElements)
+                if(elementStack.amount != 0) neighbourHandler.insert(elementStack, false);
 
             entity.setChanged();
             neighbour.setChanged();

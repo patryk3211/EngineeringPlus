@@ -7,7 +7,7 @@ public class ElementStack {
     public static final ElementStack EMPTY = new ElementStack(Elements.EMPTY.get(), 0, 0);
 
     public final Element element;
-    /** Amount provided in kg (kilogram) **/
+    /** Amount provided in g (kilogram) **/
     public int amount;
     /** Temperature provided in K (kelvin) **/
     public float temperature;

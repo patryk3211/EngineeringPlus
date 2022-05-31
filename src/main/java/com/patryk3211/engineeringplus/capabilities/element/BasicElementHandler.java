@@ -12,12 +12,13 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
-public class BasicElementHandler implements IElementHandler, INBTSerializable<ListTag> {
+public class BasicElementHandler implements IElementHandler, INBTSerializable<CompoundTag> {
     private final List<ElementStack> elements = new ArrayList<>();
     private final float volume;
     private int totalAmount = 0;
-    private float totalThermalEnergy = 0;
-    private boolean tempRecalc = false;
+
+    private float temperature = 0;
+    private float thermalMass = 0;
     private int totalPressure = 0;
     private boolean psrRecalc = false;
 
@@ -29,7 +30,15 @@ public class BasicElementHandler implements IElementHandler, INBTSerializable<Li
     public ElementStack insert(ElementStack stack, boolean simulate) {
         if(!simulate) {
             // Increase thermal energy
-            totalThermalEnergy += stack.temperature * stack.amount * stack.element.getHeatCapacity();
+            if(thermalMass != 0) {
+                thermalMass += stack.element.getHeatCapacity() * stack.amount;
+                temperature += (stack.temperature - temperature) * stack.amount * stack.element.getHeatCapacity() / thermalMass;
+                System.out.println("Ins t = " + stack.temperature + " m = " + stack.amount + " c = " + stack.element.getHeatCapacity() + " m_t = " + thermalMass);
+            } else {
+                temperature = stack.temperature;
+                thermalMass = stack.element.getHeatCapacity() * stack.amount;
+                System.out.println("SetIns t = " + stack.temperature + " m = " + stack.amount + " c = " + stack.element.getHeatCapacity() + " m_t = " + thermalMass);
+            }
 
             boolean inserted = false;
             for (ElementStack element : elements) {
@@ -47,7 +56,6 @@ public class BasicElementHandler implements IElementHandler, INBTSerializable<Li
                 totalAmount += stack.amount;
             }
 
-            tempRecalc = true;
             psrRecalc = true;
         }
         return stack;
@@ -60,8 +68,7 @@ public class BasicElementHandler implements IElementHandler, INBTSerializable<Li
         int finalTotalAmount = totalAmount;
         float extractedThermal = 0;
         for (ElementStack element : elements) {
-            // Recalculate temperature from thermal energy
-            if(tempRecalc) element.temperature = totalThermalEnergy * element.amount / totalAmount / (element.amount * element.element.getHeatCapacity());
+            element.temperature = temperature;
 
             // Cannot move a solid.
             if(element.element.getState(element.temperature) == Element.State.SOLID) continue;
@@ -71,15 +78,14 @@ public class BasicElementHandler implements IElementHandler, INBTSerializable<Li
             finalTotalAmount -= extractedStack.amount;
             extracted.add(extractedStack);
 
-            extractedThermal += extractedStack.temperature * extractedStack.amount * extractedStack.element.getHeatCapacity();
+            extractedThermal += extractedStack.amount * extractedStack.element.getHeatCapacity();
+            System.out.println("Ext m = " + extractedStack.amount + " c = " + extractedStack.element.getHeatCapacity() + " m_t = " + thermalMass + " em_t = " + extractedThermal);
         }
         if(!simulate) {
             totalAmount = finalTotalAmount;
-            totalThermalEnergy -= extractedThermal;
+            thermalMass -= extractedThermal;
             psrRecalc = true;
         }
-
-        tempRecalc = false;
 
         return extracted;
     }
@@ -106,24 +112,32 @@ public class BasicElementHandler implements IElementHandler, INBTSerializable<Li
     }
 
     @Override
-    public ListTag serializeNBT() {
-        ListTag tag = new ListTag();
+    public CompoundTag serializeNBT() {
+        CompoundTag tag = new CompoundTag();
+
+        ListTag el = new ListTag();
         for (ElementStack element : elements) {
-            if(tempRecalc) element.temperature = totalThermalEnergy * element.amount / totalAmount / (element.amount * element.element.getHeatCapacity());
-            tag.add(element.save());
+            element.temperature = temperature;
+            el.add(element.save());
         }
-        tempRecalc = false;
+
+        tag.put("elements", el);
+        tag.putFloat("thermal", thermalMass);
         return tag;
     }
 
     @Override
-    public void deserializeNBT(ListTag nbt) {
-        for (Tag tag : nbt) {
+    public void deserializeNBT(CompoundTag nbt) {
+        thermalMass = nbt.getFloat("thermal");
+        temperature = 0;
+
+        for (Tag tag : nbt.getList("elements", Tag.TAG_COMPOUND)) {
             if(tag instanceof CompoundTag compoundTag) {
                 ElementStack stack = new ElementStack(compoundTag);
                 totalAmount += stack.amount;
                 elements.add(stack);
             }
         }
+        if(elements.size() > 0) temperature = elements.get(0).temperature;
     }
 }

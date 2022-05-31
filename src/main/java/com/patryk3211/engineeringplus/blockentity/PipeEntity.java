@@ -8,7 +8,6 @@ import com.patryk3211.engineeringplus.util.ElementHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
@@ -88,13 +87,13 @@ public class PipeEntity extends BlockEntity {
     public void load(CompoundTag tag) {
         super.load(tag);
 
-        elementHandler.ifPresent(handler -> handler.deserializeNBT(tag.getList("elements", Tag.TAG_COMPOUND)));
+        elementHandler.ifPresent(handler -> handler.deserializeNBT(tag.getCompound("element_handler")));
     }
 
     @Override
     protected void saveAdditional(CompoundTag tag) {
         super.saveAdditional(tag);
 
-        elementHandler.ifPresent(handler -> tag.put("elements", handler.serializeNBT()));
+        elementHandler.ifPresent(handler -> tag.put("element_handler", handler.serializeNBT()));
     }
 }
