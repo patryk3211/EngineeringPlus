@@ -14,6 +14,8 @@ import net.minecraftforge.common.util.LazyOptional;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.concurrent.atomic.AtomicReference;
+
 public class PipeEntity extends BlockEntity {
     private final LazyOptional<FlowElementHandler> elementHandler;
     private final int flowPerTick;
@@ -73,5 +75,11 @@ public class PipeEntity extends BlockEntity {
         super.saveAdditional(tag);
 
         elementHandler.ifPresent(handler -> tag.put("element_handler", handler.serializeNBT()));
+    }
+
+    public float getTemperature() {
+        AtomicReference<Float> temp = new AtomicReference<>(0f);
+        elementHandler.ifPresent(handler -> temp.set(handler.getTemperature()));
+        return temp.get();
     }
 }

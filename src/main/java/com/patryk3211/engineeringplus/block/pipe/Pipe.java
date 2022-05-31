@@ -5,6 +5,9 @@ import com.patryk3211.engineeringplus.capabilities.ModCapabilities;
 import com.patryk3211.engineeringplus.util.DirectionUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -24,6 +27,8 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
 public abstract class Pipe extends Block implements EntityBlock {
+    public static final DamageSource HOT_PIPE_DMG = new DamageSource("hotPipe").setIsFire();
+
     private static final VoxelShape CENTER = Block.box(5, 5, 5, 11, 11, 11);
     private static final VoxelShape NORTH = Block.box(5, 5, 0, 11, 11, 5);
     private static final VoxelShape SOUTH = Block.box(5, 5, 11, 11, 11, 16);
@@ -124,5 +129,18 @@ public abstract class Pipe extends Block implements EntityBlock {
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level _level, BlockState _state, BlockEntityType<T> _type) {
         if(_level.isClientSide) return null;
         else return (level, pos, state, tile) -> ((PipeEntity) tile).tick();
+    }
+
+    @Override
+    public void stepOn(Level level, BlockPos pos, BlockState state, Entity entity) {
+        if(entity.fireImmune() || !(entity instanceof LivingEntity)) return;
+
+        BlockEntity be = level.getBlockEntity(pos);
+        if(be instanceof PipeEntity pipe) {
+            float temperature = pipe.getTemperature();
+
+            // Damage starts at 60°C
+            if(temperature > 333.15f) entity.hurt(HOT_PIPE_DMG, 0.3f + (temperature - 333.15f) * 0.01f);
+        }
     }
 }
