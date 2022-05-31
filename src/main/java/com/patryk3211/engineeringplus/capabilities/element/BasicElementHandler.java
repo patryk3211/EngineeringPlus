@@ -33,11 +33,9 @@ public class BasicElementHandler implements IElementHandler, INBTSerializable<Co
             if(thermalMass != 0) {
                 thermalMass += stack.element.getHeatCapacity() * stack.amount;
                 temperature += (stack.temperature - temperature) * stack.amount * stack.element.getHeatCapacity() / thermalMass;
-                System.out.println("Ins t = " + stack.temperature + " m = " + stack.amount + " c = " + stack.element.getHeatCapacity() + " m_t = " + thermalMass);
             } else {
                 temperature = stack.temperature;
                 thermalMass = stack.element.getHeatCapacity() * stack.amount;
-                System.out.println("SetIns t = " + stack.temperature + " m = " + stack.amount + " c = " + stack.element.getHeatCapacity() + " m_t = " + thermalMass);
             }
 
             boolean inserted = false;
@@ -79,7 +77,6 @@ public class BasicElementHandler implements IElementHandler, INBTSerializable<Co
             extracted.add(extractedStack);
 
             extractedThermal += extractedStack.amount * extractedStack.element.getHeatCapacity();
-            System.out.println("Ext m = " + extractedStack.amount + " c = " + extractedStack.element.getHeatCapacity() + " m_t = " + thermalMass + " em_t = " + extractedThermal);
         }
         if(!simulate) {
             totalAmount = finalTotalAmount;
