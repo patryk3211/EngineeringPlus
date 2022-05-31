@@ -4,6 +4,6 @@ import net.minecraft.world.level.material.Material;
 
 public class CopperValve extends PipeValve {
     public CopperValve() {
-        super(Properties.of(Material.METAL), 1000, 1000000, 0.2f);
+        super(Properties.of(Material.METAL), 1000, 1000000, 0.2f, 5.85f);
     }
 }

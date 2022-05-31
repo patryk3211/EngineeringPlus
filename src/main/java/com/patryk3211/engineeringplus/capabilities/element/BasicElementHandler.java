@@ -18,12 +18,13 @@ public class BasicElementHandler implements IElementHandler, INBTSerializable<Co
     private int totalAmount = 0;
 
     private float temperature = 0;
-    private float thermalMass = 0;
+    private float thermalMass;
     private int totalPressure = 0;
     private boolean psrRecalc = false;
 
-    public BasicElementHandler(float volume) {
+    public BasicElementHandler(float volume, float thermalMass) {
         this.volume = volume;
+        this.thermalMass = thermalMass;
     }
 
     @Override
@@ -106,6 +107,10 @@ public class BasicElementHandler implements IElementHandler, INBTSerializable<Co
             psrRecalc = false;
         }
         return totalPressure;
+    }
+
+    public float getTemperature() {
+        return temperature;
     }
 
     @Override

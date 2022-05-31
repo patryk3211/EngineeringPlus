@@ -36,12 +36,15 @@ public abstract class Pipe extends Block implements EntityBlock {
     public final int maxPressure;
     public final float volume;
 
-    public Pipe(Properties properties, int flowRate, int maxPressure, float volume) {
+    public final float thermalMass;
+
+    public Pipe(Properties properties, int flowRate, int maxPressure, float volume, float thermalMass) {
         super(properties);
 
         this.flowRate = flowRate;
         this.maxPressure = maxPressure;
         this.volume = volume;
+        this.thermalMass = thermalMass;
 
         registerDefaultState(defaultBlockState()
                 .setValue(BlockStateProperties.NORTH, false)

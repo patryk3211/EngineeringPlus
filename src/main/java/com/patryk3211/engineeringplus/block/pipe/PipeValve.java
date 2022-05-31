@@ -51,12 +51,15 @@ public abstract class PipeValve extends KineticBlock {
     public final int maxPressure;
     public final float volume;
 
-    public PipeValve(Properties properties, int maxFlowRate, int maxPressure, float volume) {
+    public final float thermalMass;
+
+    public PipeValve(Properties properties, int maxFlowRate, int maxPressure, float volume, float thermalMass) {
         super(properties);
 
         this.maxFlowRate = maxFlowRate;
         this.maxPressure = maxPressure;
         this.volume = volume;
+        this.thermalMass = thermalMass;
     }
 
     @Override

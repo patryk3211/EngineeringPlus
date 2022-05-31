@@ -2,8 +2,7 @@ package com.patryk3211.engineeringplus.blockentity;
 
 import com.patryk3211.engineeringplus.block.pipe.Pipe;
 import com.patryk3211.engineeringplus.capabilities.ModCapabilities;
-import com.patryk3211.engineeringplus.capabilities.element.BasicElementHandler;
-import com.patryk3211.engineeringplus.element.ElementStack;
+import com.patryk3211.engineeringplus.capabilities.element.FlowElementHandler;
 import com.patryk3211.engineeringplus.util.ElementHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -15,11 +14,8 @@ import net.minecraftforge.common.util.LazyOptional;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Collection;
-
 public class PipeEntity extends BlockEntity {
-    private final LazyOptional<BasicElementHandler> elementHandler;
-    private int flowLeft;
+    private final LazyOptional<FlowElementHandler> elementHandler;
     private final int flowPerTick;
     private final int maxPressure;
     private int nextProcessedDirection;
@@ -38,39 +34,21 @@ public class PipeEntity extends BlockEntity {
         flowPerTick = pipe.flowRate;
         maxPressure = pipe.maxPressure;
 
-        elementHandler = LazyOptional.of(() -> new BasicElementHandler(pipe.volume) {
-            @Override
-            public ElementStack insert(ElementStack stack, boolean simulate) {
-                ElementStack inserted = super.insert(new ElementStack(stack.element, Math.min(flowLeft, stack.amount), stack.temperature), simulate);
-                if(!simulate) flowLeft -= inserted.amount;
-                return inserted;
-            }
-
-            @Override
-            public Collection<ElementStack> extract(int amount, boolean simulate) {
-                Collection<ElementStack> extracted = super.extract(Math.min(flowLeft, amount), simulate);
-                if(!simulate) extracted.forEach(stack -> flowLeft -= stack.amount);
-                return extracted;
-            }
-
-            @Override
-            public int canInsert(int amount) {
-                return Math.min(flowLeft, amount);
-            }
-        });
+        elementHandler = LazyOptional.of(() -> new FlowElementHandler(pipe.volume, pipe.thermalMass));
 
         connectable = 0b00111111;
     }
 
     public void tick() {
-        flowLeft = flowPerTick;
-        // This makes sure that every direction gets treated equally
-        int started = nextProcessedDirection;
-        do {
-            Direction dir = Direction.from3DDataValue(nextProcessedDirection);
-            ElementHelper.flow(this, dir);
-            if(flowLeft == 0) break;
-        } while((nextProcessedDirection = (nextProcessedDirection + 1) % 6) != started);
+        elementHandler.ifPresent(handler -> {
+            handler.setFlow(flowPerTick);
+            // This makes sure that every direction gets treated equally
+            int started = nextProcessedDirection;
+            do {
+                Direction dir = Direction.from3DDataValue(nextProcessedDirection);
+                ElementHelper.flow(this, dir);
+            } while((nextProcessedDirection = (nextProcessedDirection + 1) % 6) != started);
+        });
     }
 
     @NotNull

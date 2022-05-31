@@ -43,7 +43,7 @@ public class PipeValveEntity extends KineticEntity {
         maxFlow = valve.maxFlowRate;
         maxPressure = valve.maxPressure;
 
-        elementHandler = LazyOptional.of(() -> new FlowElementHandler(valve.volume));
+        elementHandler = LazyOptional.of(() -> new FlowElementHandler(valve.volume, valve.thermalMass));
 
         nextProcessedDirection = 0;
     }

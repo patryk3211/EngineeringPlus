@@ -7,8 +7,8 @@ import java.util.Collection;
 public class FlowElementHandler extends BasicElementHandler {
     private int flowLeft;
 
-    public FlowElementHandler(float volume) {
-        super(volume);
+    public FlowElementHandler(float volume, float thermalMass) {
+        super(volume, thermalMass);
 
         flowLeft = 0;
     }
