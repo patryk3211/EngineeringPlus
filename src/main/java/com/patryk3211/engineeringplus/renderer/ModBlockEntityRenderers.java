@@ -22,9 +22,12 @@ public class ModBlockEntityRenderers {
     }
 
     public static void onRendererRegister(final EntityRenderersEvent.RegisterRenderers event) {
-        /*Registerer registry = new Registerer(event);
+        Registerer registry = new Registerer(event);
 
-        registry.registerBlockEntities(List.of(ModBlockEntities.shaft.get()), context -> new KineticRenderer());*/
-        event.registerBlockEntityRenderer(ModBlockEntities.shaft.get(), context -> new KineticRenderer());
+        registry.registerBlockEntities(List.of(
+                ModBlockEntities.shaft.get(),
+                ModBlockEntities.pipe_valve.get(),
+                ModBlockEntities.valveHandle.get()
+        ), context -> new KineticRenderer());
     }
 }

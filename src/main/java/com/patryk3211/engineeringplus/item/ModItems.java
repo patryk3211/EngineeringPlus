@@ -14,4 +14,10 @@ public class ModItems {
     public static final RegistryObject<Item> shaft = ITEMS.register("shaft", () -> new BlockItem(ModBlocks.shaft.get(), new Item.Properties()));
     public static final RegistryObject<Item> handCrank = ITEMS.register("hand_crank", () -> new BlockItem(ModBlocks.handCrank.get(), new Item.Properties()));
     public static final RegistryObject<Item> gearbox = ITEMS.register("gearbox", () -> new BlockItem(ModBlocks.gearbox.get(), new Item.Properties()));
+
+    public static final RegistryObject<Item> copperPipe = ITEMS.register("copper_pipe", () -> new BlockItem(ModBlocks.copperPipe.get(), new Item.Properties()));
+
+    public static final RegistryObject<Item> copperValve = ITEMS.register("copper_valve", () -> new BlockItem(ModBlocks.copperValve.get(), new Item.Properties()));
+
+    public static final RegistryObject<Item> valveHandle = ITEMS.register("valve_handle", () -> new BlockItem(ModBlocks.valveHandle.get(), new Item.Properties()));
 }

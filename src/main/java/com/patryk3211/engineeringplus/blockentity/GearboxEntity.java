@@ -16,8 +16,8 @@ import java.util.List;
 
 public class GearboxEntity extends KineticEntity {
     private final EntangledKineticHandler.DataStore dataStore = new EntangledKineticHandler.DataStore();
-    private final LazyOptional<IKineticHandler> handler1 = LazyOptional.of(() -> new EntangledKineticHandler(dataStore, 1, 0, 1));
-    private final LazyOptional<IKineticHandler> handler2 = LazyOptional.of(() -> new EntangledKineticHandler(dataStore, -1, 0, 1));
+    private final LazyOptional<IKineticHandler> handler1 = LazyOptional.of(() -> new EntangledKineticHandler(dataStore, 1, 0, 1, 1));
+    private final LazyOptional<IKineticHandler> handler2 = LazyOptional.of(() -> new EntangledKineticHandler(dataStore, -1, 0, 1, 1));
 
     public GearboxEntity(BlockPos pos, BlockState state) {
         super(ModBlockEntities.gearbox.get(), pos, state);

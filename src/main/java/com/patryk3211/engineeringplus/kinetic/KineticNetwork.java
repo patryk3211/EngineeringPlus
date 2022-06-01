@@ -29,9 +29,13 @@ public class KineticNetwork implements IKineticNetwork {
     private final UUID id;
     private final Level level;
 
+    private float speedChange;
+    private float lastSpeed;
+
     private float speed;
     private float angle;
     private float inertia;
+    private float totalFriction;
 
     public KineticNetwork(UUID id, Level level) {
         this.id = id;
@@ -70,6 +74,10 @@ public class KineticNetwork implements IKineticNetwork {
         return inertia;
     }
 
+    public float getFriction() {
+        return totalFriction;
+    }
+
     @Override
     public void changeSpeed(float amount) {
         speed += amount;
@@ -99,6 +107,10 @@ public class KineticNetwork implements IKineticNetwork {
         inertia -= mass;
     }
 
+    public void addFriction(float friction) {
+        totalFriction += friction;
+    }
+
     public void setValues(float speed, float angle) {
         this.speed = speed;
         this.angle = angle;
@@ -106,7 +118,7 @@ public class KineticNetwork implements IKineticNetwork {
 
     public void syncValues() {
         // TODO: [06.05.2022] This should only send the packet to players in range of this network.
-        PacketHandler.CHANNEL.send(PacketDistributor.ALL.noArg(), new KineticNetworkPacket(id, KineticNetworkPacket.Type.UPDATE_VALUES, speed, angle));
+        PacketHandler.CHANNEL.send(PacketDistributor.ALL.noArg(), new KineticNetworkPacket(id, KineticNetworkPacket.Type.UPDATE_VALUES, speed, angle, speedChange));
     }
 
     /* Start of static functions */
@@ -159,6 +171,7 @@ public class KineticNetwork implements IKineticNetwork {
                 knet.speed = network.getFloat("speed");
                 knet.angle = network.getFloat("angle");
                 knet.inertia = network.getFloat("mass");
+                knet.totalFriction = network.getFloat("friction");
             } else EngineeringPlusMod.LOGGER.warn("Kinetic networks entry not a CompoundTag, skipping.");
         }
     }
@@ -184,6 +197,7 @@ public class KineticNetwork implements IKineticNetwork {
             netTag.putFloat("speed", network.speed);
             netTag.putFloat("angle", network.angle);
             netTag.putFloat("mass", network.inertia);
+            netTag.putFloat("friction", network.totalFriction);
 
             networks.add(netTag);
         }
@@ -218,11 +232,27 @@ public class KineticNetwork implements IKineticNetwork {
 
     static int tickCount = 0;
     private static void onWorldTick(final TickEvent.WorldTickEvent event) {
+        if(event.phase == TickEvent.Phase.START) return;
+
         Map<UUID, KineticNetwork> networks = networksByDims.get(event.world.dimension());
         if(networks == null) return;
 
         for (KineticNetwork network : networks.values()) {
-            network.angle = (network.angle + network.speed * 0.05f / 60f) % 360f;
+            // Apply friction
+            // If current network speed is smaller than the speed change from applied friction, stop the network
+            float appliedFriction = network.totalFriction / network.inertia * 0.05f;
+            if(Math.abs(network.speed) < appliedFriction) network.speed = 0;
+            else network.speed -= Math.signum(network.speed) * appliedFriction;
+
+            float speedChange = network.speed - network.lastSpeed;
+            if(network.speedChange != speedChange) {
+                // Sync network values
+                network.speedChange = speedChange;
+                network.syncValues();
+            }
+            network.lastSpeed = network.speed;
+
+            network.angle = (network.angle + network.speed * 0.05f / 60f * 360f) % 360f;
         }
         if(++tickCount >= 20) {
             for (KineticNetwork network : networks.values()) network.syncValues();

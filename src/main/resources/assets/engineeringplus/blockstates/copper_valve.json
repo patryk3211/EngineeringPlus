@@ -1,0 +1,34 @@
+{
+    "variants": {
+        "axis=x,rotation=0,model_part=static": { "model": "engineeringplus:block/copper_valve", "x": -90, "y": -90 },
+        "axis=x,rotation=1,model_part=static": { "model": "engineeringplus:block/copper_valve_alternate", "x": 90 },
+        "axis=x,rotation=2,model_part=static": { "model": "engineeringplus:block/copper_valve", "x": 90, "y": -90 },
+        "axis=x,rotation=3,model_part=static": { "model": "engineeringplus:block/copper_valve_alternate", "x": -90 },
+
+        "axis=y,rotation=0,model_part=static": { "model": "engineeringplus:block/copper_valve" },
+        "axis=y,rotation=1,model_part=static": { "model": "engineeringplus:block/copper_valve", "y": 90 },
+        "axis=y,rotation=2,model_part=static": { "model": "engineeringplus:block/copper_valve", "y": 180 },
+        "axis=y,rotation=3,model_part=static": { "model": "engineeringplus:block/copper_valve", "y": -90 },
+
+        "axis=z,rotation=0,model_part=static": { "model": "engineeringplus:block/copper_valve", "x": -90 },
+        "axis=z,rotation=1,model_part=static": { "model": "engineeringplus:block/copper_valve_alternate", "x": 90, "y": 90 },
+        "axis=z,rotation=2,model_part=static": { "model": "engineeringplus:block/copper_valve", "x": 90 },
+        "axis=z,rotation=3,model_part=static": { "model": "engineeringplus:block/copper_valve_alternate", "x": 90, "y": -90 },
+
+
+        "axis=x,rotation=0,model_part=shaft": { "model": "engineeringplus:block/shaft/4", "x": -90 },
+        "axis=x,rotation=1,model_part=shaft": { "model": "engineeringplus:block/shaft/4" },
+        "axis=x,rotation=2,model_part=shaft": { "model": "engineeringplus:block/shaft/4", "x": 90 },
+        "axis=x,rotation=3,model_part=shaft": { "model": "engineeringplus:block/shaft/4", "y": 180 },
+
+        "axis=y,rotation=0,model_part=shaft": { "model": "engineeringplus:block/shaft/4" },
+        "axis=y,rotation=1,model_part=shaft": { "model": "engineeringplus:block/shaft/4", "y": 90 },
+        "axis=y,rotation=2,model_part=shaft": { "model": "engineeringplus:block/shaft/4", "y": 180 },
+        "axis=y,rotation=3,model_part=shaft": { "model": "engineeringplus:block/shaft/4", "y": -90 },
+
+        "axis=z,rotation=0,model_part=shaft": { "model": "engineeringplus:block/shaft/4", "x": -90 },
+        "axis=z,rotation=1,model_part=shaft": { "model": "engineeringplus:block/shaft/4", "y": 90 },
+        "axis=z,rotation=2,model_part=shaft": { "model": "engineeringplus:block/shaft/4", "x": 90 },
+        "axis=z,rotation=3,model_part=shaft": { "model": "engineeringplus:block/shaft/4", "y": -90 }
+    }
+}

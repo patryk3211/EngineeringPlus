@@ -1,0 +1,11 @@
+{
+    "multipart": [
+        { "apply": { "model": "engineeringplus:block/pipe/copper_pipe_center" } },
+        { "when": { "up": true }, "apply": { "model": "engineeringplus:block/pipe/copper_pipe_side", "x": -90 } },
+        { "when": { "down": true }, "apply": { "model": "engineeringplus:block/pipe/copper_pipe_side", "x": 90 } },
+        { "when": { "east": true }, "apply": { "model": "engineeringplus:block/pipe/copper_pipe_side", "y": 90 } },
+        { "when": { "west": true }, "apply": { "model": "engineeringplus:block/pipe/copper_pipe_side", "y": -90 } },
+        { "when": { "north": true }, "apply": { "model": "engineeringplus:block/pipe/copper_pipe_side", "y": 0 } },
+        { "when": { "south": true }, "apply": { "model": "engineeringplus:block/pipe/copper_pipe_side", "y": 180 } }
+    ]
+}

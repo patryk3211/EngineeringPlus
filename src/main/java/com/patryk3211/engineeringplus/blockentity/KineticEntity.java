@@ -79,6 +79,7 @@ public abstract class KineticEntity extends BlockEntity {
 
                     // Add the inertia
                     neighbourNetwork.addMass(Math.abs(oldNetwork.getInertia() * handler.getSpeedMultiplier()), oldNetwork.getSpeed());
+                    neighbourNetwork.addFriction(Math.abs(oldNetwork.getFriction() / handler.getSpeedMultiplier()));
                     System.out.println("Merged " + oldNetwork.getInertia() + " inertia into (" + neighbourNetwork.getId() + ") mass " + neighbourNetwork.getInertia());
 
                     Set<IKineticHandler> processedHandlers = new HashSet<>();
@@ -109,6 +110,7 @@ public abstract class KineticEntity extends BlockEntity {
                     oldNetwork.remove();
                 }
                 neighbourNetwork.addMass(Math.abs(handler.getInertia() * handler.getSpeedMultiplier()), 0);
+                neighbourNetwork.addFriction(Math.abs(handler.getFriction() / handler.getSpeedMultiplier()));
                 System.out.println("Added " + handler.getInertia() + " to network (" + neighbourNetwork.getId() + ") mass " + neighbourNetwork.getInertia());
             });
         }
@@ -122,6 +124,7 @@ public abstract class KineticEntity extends BlockEntity {
             for (Direction direction : checkHandlers.get(handler)) {
                 handlerNetwork.addTile(worldPosition, direction);
                 handlerNetwork.addMass(Math.abs(handler.getInertia() * handler.getSpeedMultiplier()), 0);
+                handlerNetwork.addFriction(Math.abs(handler.getFriction() / handler.getSpeedMultiplier()));
                 System.out.println("Added " + handler.getInertia() + " to a network (" + handlerNetwork.getId() + "), current mass " + handlerNetwork.getInertia());
             }
         }
@@ -140,6 +143,7 @@ public abstract class KineticEntity extends BlockEntity {
             entity.getCapability(ModCapabilities.KINETIC, direction).ifPresent(handler -> {
                 handler.setNetwork(resultNetwork);
                 resultNetwork.addMass(Math.abs(handler.getInertia() * handler.getSpeedMultiplier()), 0);
+                resultNetwork.addFriction(Math.abs(handler.getFriction() / handler.getSpeedMultiplier()));
             });
             resultNetwork.addTile(position, direction);
             tracePos(position.offset(direction.getNormal()), tiles, resultNetwork);

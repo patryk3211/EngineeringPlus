@@ -1,6 +1,7 @@
 package com.patryk3211.engineeringplus.capabilities.kinetic;
 
 import com.patryk3211.engineeringplus.kinetic.IKineticNetwork;
+import com.patryk3211.engineeringplus.util.KineticUtils;
 
 public class EntangledKineticHandler implements IKineticHandler {
     public static class DataStore {
@@ -20,11 +21,14 @@ public class EntangledKineticHandler implements IKineticHandler {
     private final float angleOffset;
     private final float inertialMass;
 
-    public EntangledKineticHandler(DataStore store, float speedMultiplier, float angleOffset, float inertialMass) {
+    private final float friction;
+
+    public EntangledKineticHandler(DataStore store, float speedMultiplier, float angleOffset, float inertialMass, float friction) {
         this.store = store;
         this.speedMultiplier = speedMultiplier;
         this.angleOffset = angleOffset;
         this.inertialMass = inertialMass;
+        this.friction = friction;
     }
 
     @Override
@@ -34,7 +38,7 @@ public class EntangledKineticHandler implements IKineticHandler {
 
     @Override
     public float getAngle() {
-        return ((store.network.getAngle() * speedMultiplier) + angleOffset) % 360;
+        return KineticUtils.normalizeAngle((store.network.getAngle() * speedMultiplier) + angleOffset);
     }
 
     @Override
@@ -50,6 +54,11 @@ public class EntangledKineticHandler implements IKineticHandler {
     @Override
     public float getInertia() {
         return inertialMass;
+    }
+
+    @Override
+    public float getFriction() {
+        return friction;
     }
 
     @Override

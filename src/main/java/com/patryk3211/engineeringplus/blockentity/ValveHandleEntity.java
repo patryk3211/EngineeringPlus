@@ -16,22 +16,11 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class ShaftEntity extends KineticEntity {
-    private final LazyOptional<IKineticHandler> kineticHandler = LazyOptional.of(() -> new BasicKineticHandler(0.5f, 0.1f));
+public class ValveHandleEntity extends KineticEntity {
+    public final LazyOptional<IKineticHandler> kineticHandler = LazyOptional.of(() -> new BasicKineticHandler(0.5f, 0.3f));
 
-    public ShaftEntity(BlockPos pos, BlockState state) {
-        super(ModBlockEntities.shaft.get(), pos, state);
-    }
-
-    @NotNull
-    @Override
-    public <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
-        if(cap == ModCapabilities.KINETIC) {
-            if(side != null && side.getAxis() == getBlockState().getValue(BlockStateProperties.AXIS))
-                return kineticHandler.cast();
-            else return LazyOptional.empty();
-        }
-        return super.getCapability(cap, side);
+    public ValveHandleEntity(BlockPos pos, BlockState state) {
+        super(ModBlockEntities.valveHandle.get(), pos, state);
     }
 
     @Override
@@ -41,7 +30,18 @@ public class ShaftEntity extends KineticEntity {
 
     @Override
     public List<Triple<LazyOptional<IKineticHandler>, BlockState, Direction.Axis>> getRenderedHandlers() {
-        BlockState state = getBlockState();
-        return List.of(Triple.of(kineticHandler, state.setValue(ModBlockProperties.MODEL_PART, ModBlockProperties.ModelPart.SHAFT), state.getValue(BlockStateProperties.AXIS)));
+        return List.of(Triple.of(kineticHandler,
+                getBlockState().setValue(ModBlockProperties.MODEL_PART, ModBlockProperties.ModelPart.SHAFT),
+                getBlockState().getValue(BlockStateProperties.FACING).getAxis()));
+    }
+
+    @NotNull
+    @Override
+    public <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
+        if(cap == ModCapabilities.KINETIC) {
+            if(side == getBlockState().getValue(BlockStateProperties.FACING)) return kineticHandler.cast();
+            else return LazyOptional.empty();
+        }
+        return super.getCapability(cap, side);
     }
 }

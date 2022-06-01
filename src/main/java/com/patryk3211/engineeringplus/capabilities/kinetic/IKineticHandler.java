@@ -34,6 +34,12 @@ public interface IKineticHandler {
     float getInertia();
 
     /**
+     * Get friction of this handler (This will be applied as a counter force to the network)
+     * @return Friction [1 rpm/s * kg]
+     */
+    float getFriction();
+
+    /**
      * Apply a given amount of force for 1 tick
      * @param force Amount of force [1 rpm/s * kg]
      */

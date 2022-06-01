@@ -1,0 +1,6 @@
+{
+    "parent": "engineeringplus:item/template/valve",
+    "textures": {
+        "pipe": "engineeringplus:block/copper_pipe"
+    }
+}

@@ -1,15 +1,19 @@
 package com.patryk3211.engineeringplus.capabilities.kinetic;
 
 import com.patryk3211.engineeringplus.kinetic.IKineticNetwork;
+import com.patryk3211.engineeringplus.util.KineticUtils;
 
 public class BasicKineticHandler implements IKineticHandler {
     private IKineticNetwork network;
     private final float inertialMass;
+
+    private final float friction;
     private float speedMultiplier = 1;
     private float angleOffset = 0;
 
-    public BasicKineticHandler(float inertialMass) {
+    public BasicKineticHandler(float inertialMass, float friction) {
         this.inertialMass = inertialMass;
+        this.friction = friction;
     }
 
     @Override
@@ -21,7 +25,7 @@ public class BasicKineticHandler implements IKineticHandler {
     @Override
     public float getAngle() {
         if(network == null) return 0;
-        return ((network.getAngle() * speedMultiplier) + angleOffset) % 360;
+        return KineticUtils.normalizeAngle((network.getAngle() * speedMultiplier) + angleOffset);
     }
 
     @Override
@@ -37,6 +41,11 @@ public class BasicKineticHandler implements IKineticHandler {
     @Override
     public float getInertia() {
         return inertialMass;
+    }
+
+    @Override
+    public float getFriction() {
+        return friction;
     }
 
     @Override
