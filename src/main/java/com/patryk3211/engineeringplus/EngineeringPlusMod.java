@@ -22,9 +22,11 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.RegistryBuilder;
 import org.slf4j.Logger;
 
-@Mod(StaticConfig.MOD_ID)
+@Mod(EngineeringPlusMod.ID)
 public class EngineeringPlusMod {
     public static final Logger LOGGER = LogUtils.getLogger();
+
+    public static final String ID = "engineeringplus";
 
     public EngineeringPlusMod() {
         EngineeringPlusConfig.init();

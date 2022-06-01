@@ -1,4 +1,4 @@
-[![Build Status](https://app.travis-ci.com/patryk3211/EngineeringPlus.svg?branch=development-1.18.2)](https://app.travis-ci.com/patryk3211/EngineeringPlus)
+[![Build Status](https://app.travis-ci.com/patryk3211/EngineeringPlus.svg?branch=1.18.2%2Fdevelopment)](https://app.travis-ci.com/patryk3211/EngineeringPlus)
 
 # Engineering Plus
 Engineering Plus is a mod that aims to provide semi-realistic systems to Minecraft. It adds lots of useful machinery implemented a lot differently than in other mods.
